@@ -1,0 +1,43 @@
+<!--
+  Generated template for the Tracking component.
+
+  See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
+  for more info on Angular 2 Components.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Tracking
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <span color="primary" showWhen="ios">Cancel</span>
+        <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+  <ion-toolbar>
+    <ion-row>
+      <ion-col> 
+        <ion-icon name="clock"></ion-icon> {{time | date:'mm:ss'}}</ion-col>
+      <ion-col>
+        <ion-icon name="speedometer"></ion-icon> {{(distance / 1000) | number:'2.2-2'}} Km</ion-col>
+      <ion-col>
+        <ion-icon name="leaf"></ion-icon> {{ecos | number:'2.2-2'}} ECOs</ion-col>
+      <ion-col>
+        <ion-icon name="pizza"></ion-icon> {{kcal | number:'2.2-2'}} kcal</ion-col>
+
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div id="map_canvas2"></div>
+  <ion-fab center bottom padding>
+    <button ion-fab color="primary" *ngIf="status == 0" (click)="startTracking()"><ion-icon name="ios-play"></ion-icon></button>
+    <button ion-fab color="danger" *ngIf="status == 1" (click)="pauseTracking()"><ion-icon name="ios-pause"></ion-icon></button>
+    <button ion-fab color="primary" *ngIf="status == 2" (click)="publishTracking()"><ion-icon name="ios-share"></ion-icon></button>
+  </ion-fab>
+  <ion-fab left bottom padding *ngIf="status == 2">
+    <button ion-fab mini color="secondary" (click)="startTracking()"><ion-icon name="ios-play"></ion-icon></button>
+  </ion-fab>
+</ion-content>

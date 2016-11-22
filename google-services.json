@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "815643392992",
+    "firebase_url": "https://ecoin-1337.firebaseio.com",
+    "project_id": "ecoin-1337",
+    "storage_bucket": "ecoin-1337.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815643392992:android:8e370df229d89dac",
+        "android_client_info": {
+          "package_name": "de.fpo.greencity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "815643392992-nhfkvjr39m8pkj16qvn5375rh9hjpt72.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjkfVnqUo1ykQxyu8jRkxCoaCYguedlSM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

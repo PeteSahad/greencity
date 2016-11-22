@@ -1,0 +1,34 @@
+<!--
+  Generated template for the Map page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Karte</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="openMapSettings()">
+        <ion-icon name="options"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+  <ion-toolbar [hidden]="hideSettings">
+    <ion-select [(ngModel)]="selectedCategories" (ngModelChange)="selectCategories($event)">
+      <ion-option value="0">Alle Kategorien</ion-option>
+      <ion-option value="{{cat.id}}" *ngFor="let cat of cats.categories">
+        <ion-icon name="{{cat.icon}}"></ion-icon> {{cat.name}}
+        </ion-option>
+    </ion-select>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <div id="map_page"></div>
+</ion-content>

@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Challenge Detail</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div padding>
+    <h1>{{challenge.title}}</h1>
+    <p>{{challenge.description}}</p>
+         <ion-list *ngIf="steps">
+        <ion-item *ngFor="let step of steps">
+          <button ion-button full item-left color="getColor(step)" (click) = "doAction(step)">
+          <ion-icon name="getIcon(step)" item-left></ion-icon> {{step.description}}
+        </button>
+        </ion-item>
+      </ion-list>
+      
+  </div>
+
+</ion-content>

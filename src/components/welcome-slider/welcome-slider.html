@@ -1,0 +1,19 @@
+<!--
+  Generated template for the WelcomeSlider component.
+
+  See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
+  for more info on Angular 2 Components.
+-->
+
+<ion-slides pager [options]="options">
+
+  <ion-slide *ngFor="let slide of slides" style="background-color: #fff" >
+    <h2>{{slide.title}}</h2>
+    <img class="picture" [src]="'assets/welcome/' + slide.picture" />
+    <p>{{slide.text}}</p>
+    <button ion-button block *ngIf="slide.showButton" (click)="closeSlider()" color="primary" >Lass mich endlich rein!</button>
+    
+  </ion-slide>
+
+
+</ion-slides>

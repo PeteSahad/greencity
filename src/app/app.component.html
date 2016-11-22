@@ -1,0 +1,28 @@
+<ion-menu [content]="content">
+
+  <ion-content class="menu-left">
+    <!-- User profile -->
+    <div text-center *ngIf="auth.user != null" >
+      <a menuClose (click)="viewUser(auth.user.id)">
+        <img class="profile-picture" src="{{ auth.user.picture }}">
+        <h4 class="username">{{auth.user.username}}</h4>
+      </a>
+
+      <div class="search-form">
+        <ion-icon name="ios-search"></ion-icon>
+        <ion-input type="text" placeholder="Search"></ion-input>
+      </div>
+    </div>
+
+    <ion-list class="list-full-border">
+      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+        <ion-icon item-left name="{{ p.icon }}"></ion-icon>
+        {{ p.title }}
+        <ion-badge color="danger" item-right *ngIf="p.count">{{ p.count }}</ion-badge>
+      </button>
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
