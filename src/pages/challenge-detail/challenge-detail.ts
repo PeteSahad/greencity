@@ -1,3 +1,4 @@
+import { Toast } from 'ionic-native';
 import { CameraComponent } from './../../components/camera/camera';
 import { ChallengeProvider } from './../../providers/challenge-provider';
 import { Component } from '@angular/core';
@@ -76,29 +77,31 @@ export class ChallengeDetailPage {
   doAction(action) {
     console.log(this.progress[action.id]);
     if (this.progress[action.id]) {
-      return false;
+      Toast.showLongBottom('Du hast diese Aufgabe bereits erfüllt');
     }
 
-    var actionModal = this.modalCtrl.create(CameraComponent, { showCategories: false });
+    let modal = this.modalCtrl.create(CameraComponent, { showCategories: false });
 
-    actionModal.onDidDismiss((data) => {
-      //this.challengeProvider.
+    modal.onDidDismiss((data) => {
+      this.challengeProvider.createStepResult(this.challenge, action).then((value) => {
+        //@TODO: Create Alert -> Message
+      })
     })
 
-    actionModal.present();
+    modal.present();
   }
 
-  getColor(step) {
+  alreadyDone(step) {
     if (this.progress.user[step.id]) {
-      return 'primary'
+      return true
     } else {
-      return 'secondary'
+      return false
     }
   }
 
   getIcon(step) {
     return step.type;
-  }
+  } 
 
   dismiss() {
     this.navCtrl.pop();

@@ -1,3 +1,4 @@
+import { ProgressbarComponent } from './../components/progressbar/progressbar';
 import { ChallengeDetailPage } from './../pages/challenge-detail/challenge-detail';
 import { Object2array } from './../pipes/object2array';
 import { StatisticsPage } from './../pages/statistics/statistics';
@@ -71,11 +72,13 @@ import { ChallengesPage} from '../pages/challenges/challenges';
     Stopwatch,
     Object2array,
     StatisticsPage,
+    ProgressbarComponent,
     
 ],
   imports: [
     IonicModule.forRoot(MyApp),   
-    ChartModule
+    ChartModule,
+    
     /**AgmCoreModule.forRoot({
       apiKey: 'AIzaSyAzXT3w21lVFijawEkfd9mG4za9gTNV-yQ'
     }) */
@@ -102,7 +105,7 @@ import { ChallengesPage} from '../pages/challenges/challenges';
     TrackingComponent,
     PositionComponent,
     WelcomeSliderComponent,
-    StatisticsPage
+    StatisticsPage,
 ],
   providers: [
     PostService,

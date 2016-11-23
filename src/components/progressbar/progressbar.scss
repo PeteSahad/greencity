@@ -1,0 +1,33 @@
+progressbar {
+    div {
+        position:relative;
+        margin:80px;
+        width:100%; height:100%;
+    }
+
+    canvas {
+        display: block;
+        position:absolute;
+        top:0;
+        left:0;
+    }
+    span {
+        color:#555;
+        display:block;
+        line-height:220px;
+        text-align:center;
+        width:220px;
+        font-family:sans-serif;
+        font-size:40px;
+        font-weight:100;
+        margin-left:5px;
+    }
+
+    input {
+        width: 200px;
+    }
+
+    span {
+    
+    }
+}

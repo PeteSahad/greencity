@@ -31,7 +31,7 @@ export class ChallengeProvider {
           resolve(data);
         })
       }).catch(() => {
-        this.http.get(this.api + '/challenges?lat=52&lng=11').map(res => res.json()).subscribe(data => {
+        this.http.get(this.api + '/challenges?lat=51.533966&lng=9.934930').map(res => res.json()).subscribe(data => {
           this.challenges = data;
           resolve(data);
         })
@@ -44,6 +44,17 @@ export class ChallengeProvider {
     return new Promise(resolve => {
       this.apiService.get('/challenge', { challengeId: id, userId: userId }).then((response) => {
         resolve(response);
+      })
+    })
+
+  }
+
+  createStepResult(challenge, step) {
+    return new Promise(resolve => {
+      this.apiService.post('/challenge', {
+        challenge: challenge.id,
+        step: step.id,
+        user: this.auth.user.id
       })
     })
 
