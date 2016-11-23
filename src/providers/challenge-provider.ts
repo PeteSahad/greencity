@@ -17,7 +17,7 @@ export class ChallengeProvider {
   api: string = 'http://greencity.dnsv.eu/app_dev.php'
   challenges: any[];
 
-  constructor(public http: Http, protected apiService: ApiProvider, protected auth: AuthProvider) {
+  constructor(protected apiService: ApiProvider) {
     this.load().then((challenges: any[]) => {
       this.challenges = challenges;
     })
@@ -33,22 +33,29 @@ export class ChallengeProvider {
   }
 
   getItem(id) {
-    let userId = this.auth.user != null ? this.auth.user.id : 1;
     return new Promise(resolve => {
-      this.apiService.get('/challenge', { challengeId: id, userId: userId }).then((response) => {
+      this.apiService.get('/challenge', { challengeId: id }).then((response) => {
         resolve(response);
       })
     })
 
   }
 
-  createStepResult(challenge, step) {
+  createStepResult(challenge, step, modalData) {
     return new Promise((resolve, reject) => {
-      this.apiService.post('/challenge', {
-        challenge: challenge.id,
-        step: step.id,
-        user: this.auth.user.id
-      }).then((data) => {
+      let response;
+      if (step.type == 'camera') {
+        response = this.apiService.upload('/challenge', modalData.picture, {
+          challenge: challenge.id,
+          step: step.id,
+        })
+      } else {
+        response = this.apiService.post('/challenge', {
+          challenge: challenge.id,
+          step: step.id
+        })
+      }
+      response.then((data) => {
         resolve(data);
       }).catch((error) => {
         reject(error);

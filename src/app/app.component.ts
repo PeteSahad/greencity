@@ -1,12 +1,12 @@
 import { StatisticsPage } from './../pages/statistics/statistics';
-import { PostPage } from './../../.tmp/pages/post/post';
+import { PostPage } from './../pages/post/post';
 import { UserService } from './../services/user-service';
 
 import { MapPage } from './../pages/map/map';
 import { CouponsPage } from './../pages/coupons/coupons';
 import { ChallengesPage } from './../pages/challenges/challenges';
 
-import { AuthProvider } from './../../.tmp/providers/auth-provider';
+import { AuthProvider } from './../providers/auth-provider';
 import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { ViewChild } from '@angular/core';
@@ -108,7 +108,7 @@ export class MyApp {
       });
 
       push.on('registration', (data) => {
-        //this.reminder.registrationId = data.registrationId;
+        this.auth.registrationId = data.registrationId;
       });
 
       push.on('notification', (response: any) => {

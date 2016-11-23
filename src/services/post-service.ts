@@ -1,3 +1,4 @@
+import { Platform } from 'ionic-angular';
 import { AuthProvider } from './../providers/auth-provider';
 import { Geolocation, Transfer } from 'ionic-native';
 import { Http } from '@angular/http';
@@ -11,8 +12,11 @@ export class PostService {
   api: string = 'http://greencity.dnsv.eu/app_dev.php';
   fileTransfer: Transfer = new Transfer();
 
-  constructor(public http: Http, public auth: AuthProvider) {
-    this.posts = POSTS;
+  constructor(public http: Http, public auth: AuthProvider, platform: Platform) {
+    platform.ready().then(() => {
+      this.fileTransfer = new Transfer();
+    })
+    this.posts = [];
     this.load();
   }
 
@@ -176,9 +180,9 @@ export class PostService {
     this.posts = postArray.concat(this.posts);
   }
 
-  
 
-  
+
+
   getAll() {
 
     return this.posts;

@@ -59,9 +59,6 @@ export class ChallengeDetailPage {
     protected alert: AlertController,
   ) {
     let challengeId = params.get('id');
-    this.challenge = new Challenge();
-
-
     this.challengeProvider.getItem(challengeId).then((response: any) => {
       this.challenge = response.meta[0];
       this.progress = response.progress;
@@ -76,14 +73,8 @@ export class ChallengeDetailPage {
   }
 
   doAction(action) {
-    if (this.progress.user.filter(step => step.id == action.id)[0]) {
-      Toast.showLongBottom('Du hast diese Aufgabe bereits erfüllt');
-      return false;
-    }
-
-    console.log(action);
-
-
+   
+    
     let modal;
     if (action.type == 'position') {
       modal = this.modalCtrl.create(PositionComponent, { showCategories: false });
@@ -94,7 +85,7 @@ export class ChallengeDetailPage {
     }
 
     modal.onDidDismiss((data) => {
-      this.challengeProvider.createStepResult(this.challenge, action).then((value: Step) => {
+      this.challengeProvider.createStepResult(this.challenge, action, data).then((value: Step) => {
 
         if (value.id) {
           this.progress.user.push({ id: value.id });
@@ -116,18 +107,53 @@ export class ChallengeDetailPage {
   }
 
   alreadyDone(step) {
+    if (this.progress == undefined) {
+      return false;
+    }
     let data = this.progress.user.filter(stepResult => stepResult.id == step.id)[0];
-    console.log(this.progress.user, step.description, data);
     return data;
 
   }
 
+  challengeDone() {
+    if (this.progress == undefined) {
+      return false;
+    }
+    if (this.progress.user.length != this.steps.length) {
+      return false;
+    }
+
+    return true;
+  }
+
   getIcon(step) {
-    return step.type;
+    if (step.type == 'camera') {
+      return 'camera'
+    } else if (step.type == 'tracking') {
+      return 'bicycle'
+    }
+
+    return 'pause';
   }
 
   dismiss() {
     this.navCtrl.pop();
+  }
+
+  getRuntime(challenge) {
+    if(challenge.runtime == undefined || challenge.runtime == null) {
+      return 'unbegrenzt';
+    }
+
+    if(challenge.runtime == 'day') {
+      return 'Ein Tag'
+    } else if(challenge.runtime == 'week') {
+      return 'Eine Woche'
+    } else if(challenge.runtime == 'month') {
+      return 'Ein Monat'
+    } else {
+      return 'Ein Jahr';
+    }
   }
 
 }

@@ -12,7 +12,6 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class CategoryProvider {
 
-  api: string = 'http://greencity.dnsv.eu/app_dev.php'
   categories: any[];
 
   constructor(public http: Http, protected apiService:ApiProvider) {

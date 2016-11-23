@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="challenge">
   <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
@@ -7,17 +7,43 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <div padding>
+  <div padding *ngIf="challenge">
     <p>{{challenge.description}}</p>
+    <ion-list>
+      <ion-item>
+        <ion-icon item-left name="ios-alarm-outline"></ion-icon>
+        Gestartet am
+        <ion-badge item-right>{{challenge.startedAt | date:'dd.MM.yy'}}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="ios-calendar-outline" item-left></ion-icon>
+        Laufzeit
+        <ion-badge item-right>{{getRuntime(challenge)}}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="ios-analytics-outline" item-left></ion-icon>
+        Belohnung
+        <ion-badge item-right [color]="challengeDone() ? 'primary' : 'secondary'">{{challenge.ecos}} ECOs</ion-badge>
+      </ion-item>
+    </ion-list>
     <ion-list *ngIf="steps">
       <ion-item *ngFor="let step of steps">
         <button ion-button full icon-left icon-l [color]="alreadyDone(step) ? 'primary' : 'secondary'" (click)="doAction(step)">
-          <ion-icon name="getIcon(step)" ></ion-icon> {{step.description}}
+          <ion-icon [name]="getIcon(step)" ></ion-icon> {{step.description}}
         </button>
       </ion-item>
       <ion-item-divider>
         Statistiken
       </ion-item-divider>
+      <ion-item>
+        Dein Fortschritt
+      </ion-item>
+      <ion-item>
+        Bezirksfortschritt
+      </ion-item>
+      <ion-item>
+        Stadtfortschritt
+      </ion-item>
 
     </ion-list>
 

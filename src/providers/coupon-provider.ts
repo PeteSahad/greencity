@@ -1,3 +1,4 @@
+import { ApiProvider } from './api-provider';
 import { Geolocation } from 'ionic-native';
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
@@ -11,33 +12,25 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class CouponProvider {
-  api: string = 'http://greencity.dnsv.eu/app_dev.php'
+
   coupons: any[] = [];
 
-  constructor(public http: Http) {
-    this.load().then((coupons: any[]) => {
-      this.coupons = coupons;
-    })
+  constructor(protected apiService: ApiProvider) {
+    this.load();
   }
 
   getItem(id) {
-    return new Promise(resolve => {
-      this.http.get(this.api + '/coupon?id=' + id).map(res => res.json()).subscribe((post) => {
-        resolve(post)
-      })
-    })
-
+    return this.apiService.get('/coupon', { id: id })
   }
 
   load() {
     return new Promise(resolve => {
-      Geolocation.getCurrentPosition().then(position => {
-        this.http.get(this.api + '/coupons?lat=' + position.coords.latitude + '&lng=' + position.coords.longitude).map(res => res.json()).subscribe(data => {
-          this.coupons = data;
-          resolve(data);
-        })
-      });
+      this.apiService.get('/coupons', {}).then((coupons: any) => {
+        this.coupons = coupons;
+        resolve(coupons);
+      })
     })
+
   }
 
 }

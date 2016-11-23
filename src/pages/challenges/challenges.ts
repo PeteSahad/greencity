@@ -41,9 +41,9 @@ export class ChallengesPage {
 
   // on click, go to post detail
   openChallenge(challengeId) {
-    console.log(challengeId);
-    
+    console.log(challengeId);   
     this.nav.push(ChallengeDetailPage, {id: challengeId})
+    console.log(challengeId);
   }
 
   // on click, go to user timeline

@@ -20,11 +20,11 @@ export class User {
 export class AuthProvider {
 
   api: string = 'http://greencity.dnsv.eu/app_dev.php';
-  user: User
+  user: User;
+  registrationId: string;
 
   constructor(public http: Http, protected reminder:ReminderService ) {
     this.user = JSON.parse(localStorage.getItem('user'));
-    this.reminder.registerHandlers();
   }
 
   logout() {
@@ -37,7 +37,7 @@ export class AuthProvider {
       this.http.post(this.api + '/register', {
         latitude: position.coords.latitude, 
         longitude: position.coords.longitude,
-        registration_id: this.reminder.registrationId
+        registration_id: this.registrationId
       }).map(res => res.json()).subscribe(data => {
         this.user = data;
         localStorage.setItem('user', JSON.stringify(data));
