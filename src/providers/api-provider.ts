@@ -27,7 +27,15 @@ export class ApiProvider {
           longitude: position.coords.longitude
         });
         this.http.post(this.apiUrl + url, body, options).map(res => res.json())
-          .subscribe(value => resolve(value));
+          .subscribe(value => resolve(value), error => {
+            let alertWindow = this.alert.create({
+              title: 'Fehler',
+              subTitle: 'Es besteht keine Verbindung zum Server. Bitte prüfe dein Internetzugang.',
+              buttons: ['OK']
+            });
+            alertWindow.present();
+            reject(error);
+          });
       }).catch((error) => {
         let alert = this.alert.create({
           title: "Fehler",
@@ -50,16 +58,24 @@ export class ApiProvider {
         });
         this.http.get(this.apiUrl + url + this._prepareParams(params), options)
           .map(res => res.json())
-          .subscribe(value => resolve(value), error => reject(error));
-      });
-    }).catch((error) => {
-      let alert = this.alert.create({
-        title: "Fehler",
-        subTitle: "Dein Standort konnte nicht ermittelt werden. Bitte aktiviere deinen Standort und probiere es erneut.",
-        buttons: ['OK']
+          .subscribe(value => resolve(value), error => {
+            let alertWindow = this.alert.create({
+              title: 'Fehler',
+              subTitle: 'Es besteht keine Verbindung zum Server. Bitte prüfe dein Internetzugang.',
+              buttons: ['OK']
+            });
+            alertWindow.present();
+            reject(error);
+          });
+      }).catch((error) => {
+        let alert = this.alert.create({
+          title: "Fehler",
+          subTitle: "Dein Standort konnte nicht ermittelt werden. Bitte aktiviere deinen Standort und probiere es erneut.",
+          buttons: ['OK']
+        })
+        alert.present();
       })
-      alert.present();
-    });
+    })
   }
 
   protected _prepareParams(params: any) {

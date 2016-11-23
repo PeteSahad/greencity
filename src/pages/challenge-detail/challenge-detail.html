@@ -9,21 +9,18 @@
 <ion-content>
   <div padding>
     <p>{{challenge.description}}</p>
-         <ion-list *ngIf="steps">
-        <ion-item *ngFor="let step of steps">
-          <button ion-button full icon-left icon-l [color]="alreadyDone(step) ? 'primary' : 'secondary'" (click) = "doAction(step)">
+    <ion-list *ngIf="steps">
+      <ion-item *ngFor="let step of steps">
+        <button ion-button full icon-left icon-l [color]="alreadyDone(step) ? 'primary' : 'secondary'" (click)="doAction(step)">
           <ion-icon name="getIcon(step)" ></ion-icon> {{step.description}}
         </button>
-        </ion-item>
-        <ion-item-divider>
-          Statistiken
-        </ion-item-divider>
-        <ion-item>
+      </ion-item>
+      <ion-item-divider>
+        Statistiken
+      </ion-item-divider>
 
-          <progressbar [selector]="test" [percentage]="10" ></progressbar>
-        </ion-item>
-      </ion-list>
-      
+    </ion-list>
+
   </div>
 
 </ion-content>

@@ -17,10 +17,6 @@
   <ion-list>
 
     <ion-item text-wrap class="align-top" *ngFor="let challenge of chall.challenges" (click)="openChallenge(challenge.id)">
-      <ion-avatar item-left>
-        <img class="profile-picture" src="{{ challenge.face }}" alt="" />
-      </ion-avatar>
-
       <div class="item-body">
         <h3 color="primary" class="challenge-author" (click)="viewUser(challenge.user_id)">
           {{ challenge.title }}

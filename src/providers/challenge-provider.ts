@@ -25,18 +25,11 @@ export class ChallengeProvider {
 
   load() {
     return new Promise(resolve => {
-      Geolocation.getCurrentPosition().then(position => {
-        this.http.get(this.api + '/challenges?lat=' + position.coords.latitude + '&lng=' + position.coords.longitude).map(res => res.json()).subscribe(data => {
-          this.challenges = data;
-          resolve(data);
-        })
-      }).catch(() => {
-        this.http.get(this.api + '/challenges?lat=51.533966&lng=9.934930').map(res => res.json()).subscribe(data => {
-          this.challenges = data;
-          resolve(data);
-        })
-      });
-    })
+      this.apiService.get('/challenges', {}).then((data: any[]) => {
+        this.challenges = data;
+        resolve(data);
+      })
+    });
   }
 
   getItem(id) {
@@ -50,11 +43,15 @@ export class ChallengeProvider {
   }
 
   createStepResult(challenge, step) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.apiService.post('/challenge', {
         challenge: challenge.id,
         step: step.id,
         user: this.auth.user.id
+      }).then((data) => {
+        resolve(data);
+      }).catch((error) => {
+        reject(error);
       })
     })
 

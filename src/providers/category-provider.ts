@@ -1,3 +1,4 @@
+import { ApiProvider } from './api-provider';
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -14,18 +15,14 @@ export class CategoryProvider {
   api: string = 'http://greencity.dnsv.eu/app_dev.php'
   categories: any[];
 
-  constructor(public http: Http) {
-    this.load().then((categories: any[]) => {
-      this.categories = categories;
-    })
+  constructor(public http: Http, protected apiService:ApiProvider) {
+    this.load()
   }
 
   load() {
-    return new Promise(resolve => {
-      this.http.get(this.api + '/categories').map(res => res.json()).subscribe(data => {
-        resolve(data);
-      })
-    })
+    return this.apiService.get('/categories', {}).then((data:any[]) => {
+      this.categories = data
+    });
   }
 
 }

@@ -1,8 +1,11 @@
+import { PositionComponent } from './../../components/position/position';
+import { TrackingComponent } from './../../components/tracking/tracking';
+import { User } from './../../providers/auth-provider';
 import { Toast } from 'ionic-native';
 import { CameraComponent } from './../../components/camera/camera';
 import { ChallengeProvider } from './../../providers/challenge-provider';
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
 
 export class IStep {
   title: string;
@@ -28,8 +31,8 @@ export class Challenge {
 }
 
 export class Step {
-   id: number;
-   description: string;
+  id: number;
+  description: string;
 }
 
 /*
@@ -52,16 +55,15 @@ export class ChallengeDetailPage {
     public navCtrl: NavController,
     params: NavParams,
     protected modalCtrl: ModalController,
-    protected challengeProvider: ChallengeProvider
+    protected challengeProvider: ChallengeProvider,
+    protected alert: AlertController,
   ) {
     let challengeId = params.get('id');
     this.challenge = new Challenge();
 
-    console.log(challengeId);
+
     this.challengeProvider.getItem(challengeId).then((response: any) => {
-      console.log(response);
       this.challenge = response.meta[0];
-      console.log(this.challenge);
       this.progress = response.progress;
       this.steps = response.steps;
     }).catch((error) => {
@@ -70,21 +72,43 @@ export class ChallengeDetailPage {
   }
 
   ionViewDidLoad() {
-    console.log('loaded');
 
   }
 
   doAction(action) {
-    console.log(this.progress[action.id]);
-    if (this.progress[action.id]) {
+    if (this.progress.user.filter(step => step.id == action.id)[0]) {
       Toast.showLongBottom('Du hast diese Aufgabe bereits erfüllt');
+      return false;
     }
 
-    let modal = this.modalCtrl.create(CameraComponent, { showCategories: false });
+    console.log(action);
+
+
+    let modal;
+    if (action.type == 'position') {
+      modal = this.modalCtrl.create(PositionComponent, { showCategories: false });
+    } else if (action.type == 'tracking') {
+      modal = this.modalCtrl.create(TrackingComponent, { showCategories: false });
+    } else {
+      modal = this.modalCtrl.create(CameraComponent, { showCategories: false });
+    }
 
     modal.onDidDismiss((data) => {
-      this.challengeProvider.createStepResult(this.challenge, action).then((value) => {
-        //@TODO: Create Alert -> Message
+      this.challengeProvider.createStepResult(this.challenge, action).then((value: Step) => {
+
+        if (value.id) {
+          this.progress.user.push({ id: value.id });
+        }
+
+        if (this.progress.user.length == this.steps.length) {
+          let alert = this.alert.create({
+            title: 'Herzlichen Glückwunsch!',
+            subTitle: 'Du hast alle Aufgaben erfolgreich erledigt und dir ' + this.challenge.ecos + ' ECOs verdient! ',
+            buttons: ['OK']
+          });
+
+          alert.present();
+        }
       })
     })
 
@@ -92,16 +116,15 @@ export class ChallengeDetailPage {
   }
 
   alreadyDone(step) {
-    if (this.progress.user[step.id]) {
-      return true
-    } else {
-      return false
-    }
+    let data = this.progress.user.filter(stepResult => stepResult.id == step.id)[0];
+    console.log(this.progress.user, step.description, data);
+    return data;
+
   }
 
   getIcon(step) {
     return step.type;
-  } 
+  }
 
   dismiss() {
     this.navCtrl.pop();
