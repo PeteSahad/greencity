@@ -52,6 +52,7 @@
       <div>
         <a (click)="viewPost(post.postId)" class="subdued">{{ post.likeCount}} Likes</a>
         <a (click)="viewPost(post.postId)" class="subdued" margin-left>{{ post.commentCount}} Comments</a>
+        <a (click)="viewPost(post.postId)" class="subdued" margin-left>Veröffentlicht am {{ post.createdAt | date:'dd.MM.yy HH:mm'}}</a>
       </div>
     </ion-item>
 
