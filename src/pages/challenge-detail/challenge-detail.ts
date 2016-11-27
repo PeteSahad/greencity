@@ -81,17 +81,21 @@ export class ChallengeDetailPage {
     } else if (action.type == 'tracking') {
       modal = this.modalCtrl.create(TrackingComponent, { showCategories: false });
     } else {
-      modal = this.modalCtrl.create(CameraComponent, { showCategories: false });
+      modal = this.modalCtrl.create(CameraComponent, { showCategories: false, title: action.description });
     }
 
     modal.onDidDismiss((data) => {
+      console.log(data);
+      if(data == false) {
+        return;
+      }
       this.challengeProvider.createStepResult(this.challenge, action, data).then((value: Step) => {
 
         if (value.id) {
-          this.progress.user.push({ id: value.id });
+          this.progress.user.steps.push({ id: value.id });
         }
 
-        if (this.progress.user.length == this.steps.length) {
+        if (this.progress.user.steps.length == this.steps.length) {
           let alert = this.alert.create({
             title: 'Herzlichen Glückwunsch!',
             subTitle: 'Du hast alle Aufgaben erfolgreich erledigt und dir ' + this.challenge.ecos + ' ECOs verdient! ',
@@ -110,7 +114,7 @@ export class ChallengeDetailPage {
     if (this.progress == undefined) {
       return false;
     }
-    let data = this.progress.user.filter(stepResult => stepResult.id == step.id)[0];
+    let data = this.progress.user.steps.filter(stepResult => stepResult.id == step.id)[0];
     return data;
 
   }
@@ -119,7 +123,7 @@ export class ChallengeDetailPage {
     if (this.progress == undefined) {
       return false;
     }
-    if (this.progress.user.length != this.steps.length) {
+    if (this.progress.user.steps.length != this.steps.length) {
       return false;
     }
 

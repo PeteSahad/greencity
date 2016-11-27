@@ -21,14 +21,7 @@ export class StatsProvider {
   }
 
   getMobileCharts(userId) {
-    return new Promise((resolve, reject) => {
-      console.log(userId);
-      this.api.get('/userStats', { userId: userId }).then((segments: any) => {
-        resolve(segments.mobile);
-      }, (error) => {
-        reject(error);
-      })
-    })
+    return  this.api.get('/userStats', { userId: userId });
 
   }
 

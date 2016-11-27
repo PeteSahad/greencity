@@ -9,31 +9,125 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Challenges</ion-title>
+    <ion-title>{{title}}</ion-title>
   </ion-navbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="interval">
+      <ion-segment-button value="once" (ionSelect)="selectedSegment('Einmalige Quests')">
+        Einmalig
+      </ion-segment-button>
+      <ion-segment-button value="day" (ionSelect)="selectedSegment('Tägliche Quests')">
+        Tag
+      </ion-segment-button>
+      <ion-segment-button value="week" (ionSelect)="selectedSegment('Wöchentliche Quests')">
+        Woche
+      </ion-segment-button>
+      <ion-segment-button value="month" (ionSelect)="selectedSegment('Monats Quests')">
+        Monat
+      </ion-segment-button>
+
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-    <ion-item text-wrap class="align-top" *ngFor="let challenge of chall.challenges" (click)="openChallenge(challenge.id)">
-      <div class="item-body">
-        <h3 color="primary" class="challenge-author" (click)="viewUser(challenge.user_id)">
-          {{ challenge.title }}
-        </h3>
+  <div [ngSwitch]="interval">
+    <ion-list *ngSwitchCase="'once'">
 
-        <div color="dark" class="challenge-time" *ngIf="challenge.until_at">
-          <ion-icon name="timer-outline"></ion-icon>
-          {{ challenge.until_at }}
+      <ion-item text-wrap class="align-top" *ngFor="let challenge of chall.oncechallenges" (click)="openChallenge(challenge.id)">
+        <div class="item-body">
+          <h3 color="primary" class="challenge-author" (click)="viewUser(challenge.user_id)">
+            {{ challenge.title }}
+          </h3>
+
+          <div color="dark" class="challenge-time" *ngIf="challenge.until_at">
+            <ion-icon name="timer-outline"></ion-icon>
+            {{ challenge.until_at }}
+          </div>
+
+          <div class="challenge-content">
+            <img class="full-image" *ngIf="challenge.image" src="{{ challenge.image }}">
+            <p>{{ challenge.description}}</p>
+            <ion-badge color="primary">{{challenge.ecos}} ECOs</ion-badge>
+          </div>
         </div>
 
-        <div class="challenge-content">
-          <img class="full-image" *ngIf="challenge.image" src="{{ challenge.image }}">
-          <p>{{ challenge.description}}</p>
-          <ion-badge color="primary">{{challenge.ecos}} ECOs</ion-badge>
+      </ion-item>
+
+    </ion-list>
+    <ion-list *ngSwitchCase="'day'">
+
+      <ion-item text-wrap class="align-top" *ngFor="let challenge of chall.daychallenges" (click)="openChallenge(challenge.id)">
+        <div class="item-body">
+          <h3 color="primary" class="challenge-author" (click)="viewUser(challenge.user_id)">
+            {{ challenge.title }}
+          </h3>
+
+          <div color="dark" class="challenge-time" *ngIf="challenge.until_at">
+            <ion-icon name="timer-outline"></ion-icon>
+            {{ challenge.until_at }}
+          </div>
+
+          <div class="challenge-content">
+            <img class="full-image" *ngIf="challenge.image" src="{{ challenge.image }}">
+            <p>{{ challenge.description}}</p>
+            <ion-badge color="primary">{{challenge.ecos}} ECOs</ion-badge>
+          </div>
         </div>
-      </div>
-      
-    </ion-item>
-  </ion-list>
+
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'week'">
+
+      <ion-item text-wrap class="align-top" *ngFor="let challenge of chall.weekchallenges" (click)="openChallenge(challenge.id)">
+        <div class="item-body">
+          <h3 color="primary" class="challenge-author" (click)="viewUser(challenge.user_id)">
+            {{ challenge.title }}
+          </h3>
+
+          <div color="dark" class="challenge-time" *ngIf="challenge.until_at">
+            <ion-icon name="timer-outline"></ion-icon>
+            {{ challenge.until_at }}
+          </div>
+
+          <div class="challenge-content">
+            <img class="full-image" *ngIf="challenge.image" src="{{ challenge.image }}">
+            <p>{{ challenge.description}}</p>
+            <ion-badge color="primary">{{challenge.ecos}} ECOs</ion-badge>
+          </div>
+        </div>
+
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'month'">
+
+      <ion-item text-wrap class="align-top" *ngFor="let challenge of chall.monthchallenges" (click)="openChallenge(challenge.id)">
+        <div class="item-body">
+          <h3 color="primary" class="challenge-author" (click)="viewUser(challenge.user_id)">
+            {{ challenge.title }}
+          </h3>
+
+          <div color="dark" class="challenge-time" *ngIf="challenge.until_at">
+            <ion-icon name="timer-outline"></ion-icon>
+            {{ challenge.until_at }}
+          </div>
+
+          <div class="challenge-content">
+            <img class="full-image" *ngIf="challenge.image" src="{{ challenge.image }}">
+            <p>{{ challenge.description}}</p>
+            <ion-badge color="primary">{{challenge.ecos}} ECOs</ion-badge>
+          </div>
+        </div>
+
+      </ion-item>
+    </ion-list>
+
+  </div>
+
 </ion-content>

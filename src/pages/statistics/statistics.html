@@ -30,6 +30,11 @@
     <div>
       <div>
         <div *ngFor="let chart1 of mobile">
+          <h3>{{chart1.specialLabel}}</h3>
+          <chart *ngIf="mobile" [labels]="chart1.labels" [data]="chart1.data" [options]="refreshEco" type="line"></chart>'
+        </div>
+        <div *ngFor="let chart1 of tracking">
+          <h3>{{chart1.specialLabel}}</h3>
           <chart *ngIf="mobile" [labels]="chart1.labels" [data]="chart1.data" [options]="refreshEco" type="line"></chart>'
         </div>
       

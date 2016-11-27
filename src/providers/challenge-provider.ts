@@ -15,20 +15,23 @@ import 'rxjs/add/operator/map';
 export class ChallengeProvider {
 
   api: string = 'http://greencity.dnsv.eu/app_dev.php'
-  challenges: any[];
+  daychallenges: any[];
+  weekchallenges: any[];
+  monthchallenges: any[];
+  oncechallenges: any[];
 
   constructor(protected apiService: ApiProvider) {
-    this.load().then((challenges: any[]) => {
-      this.challenges = challenges;
-    })
   }
 
   load() {
-    return new Promise(resolve => {
-      this.apiService.get('/challenges', {}).then((data: any[]) => {
-        this.challenges = data;
+    return new Promise((resolve, reject) => {
+      this.apiService.get('/challenges', {}).then((data: any) => {
+        this.daychallenges = data.day;
+        this.weekchallenges = data.week;
+        this.monthchallenges = data.month;
+        this.oncechallenges = data.once;
         resolve(data);
-      })
+      }).catch((error) => reject(error))
     });
   }
 
@@ -44,22 +47,26 @@ export class ChallengeProvider {
   createStepResult(challenge, step, modalData) {
     return new Promise((resolve, reject) => {
       let response;
+      console.log(challenge, step, modalData);
       if (step.type == 'camera') {
-        response = this.apiService.upload('/challenge', modalData.picture, {
+        this.apiService.upload('/challenge', modalData.picture, {
           challenge: challenge.id,
           step: step.id,
+        }).then((data) => {
+          resolve(data);
+        }).catch((error) => {
+          reject(error);
         })
       } else {
-        response = this.apiService.post('/challenge', {
+        this.apiService.post('/challenge', {
           challenge: challenge.id,
           step: step.id
+        }).then((data) => {
+          resolve(data);
+        }).catch((error) => {
+          reject(error);
         })
       }
-      response.then((data) => {
-        resolve(data);
-      }).catch((error) => {
-        reject(error);
-      })
     })
 
   }

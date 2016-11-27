@@ -40,11 +40,11 @@ export class StatisticsPage {
   refreshEco: boolean = null;
 
 
-  
+  tracking = [];
   mobile = [];
   eco = 0;
-  
-  
+
+
 
 
 
@@ -75,13 +75,12 @@ export class StatisticsPage {
 
   ionViewDidLoad() {
     let userId = this.auth.user.id;
-    userId = 5;
-    console.log(userId);
     this.stats.getMobileCharts(userId).then((data: any) => {
-      this.mobile = data;
+      this.mobile = data.mobile;
+      this.tracking = data.tracking;
       //this.eco = data.eco;
 
-      
+
       this.zone.run(() => {
         this.refreshEco = true;
         this.refreshEco = false;
@@ -98,13 +97,13 @@ export class StatisticsPage {
 
 }
 
- @Pipe({name: 'keys'})
- export class KeysPipe implements PipeTransform {
- transform(value) {
-   let keys:any = [];
-   for (let key in value) {
-      keys.push( {key: key, value: value[key]} );
+@Pipe({ name: 'keys' })
+export class KeysPipe implements PipeTransform {
+  transform(value) {
+    let keys: any = [];
+    for (let key in value) {
+      keys.push({ key: key, value: value[key] });
     }
-     return keys;
+    return keys;
   }
 }

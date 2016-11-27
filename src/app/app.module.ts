@@ -1,3 +1,4 @@
+import { RankingPage } from './../pages/ranking/ranking';
 import { ProgressbarComponent } from './../components/progressbar/progressbar';
 import { ChallengeDetailPage } from './../pages/challenge-detail/challenge-detail';
 import { Object2array } from './../pipes/object2array';
@@ -73,6 +74,7 @@ import { ChallengesPage} from '../pages/challenges/challenges';
     Object2array,
     StatisticsPage,
     ProgressbarComponent,
+    RankingPage
     
 ],
   imports: [
@@ -106,6 +108,7 @@ import { ChallengesPage} from '../pages/challenges/challenges';
     PositionComponent,
     WelcomeSliderComponent,
     StatisticsPage,
+    RankingPage
 ],
   providers: [
     PostService,

@@ -1,6 +1,12 @@
 {
   "name": "Green Gö",
-  "app_id": "green_goe",
+  "app_id": "d5e89294",
   "v2": true,
-  "typescript": true
+  "typescript": true,
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://greencity.dnsv.eu/app_dev.php"
+    }
+  ]
 }

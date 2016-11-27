@@ -1,3 +1,6 @@
+import { ChallengeDetailPage } from './../pages/challenge-detail/challenge-detail';
+import { RankingPage } from './../pages/ranking/ranking';
+import { RegisterPage } from './../../.tmp/pages/register/register';
 import { StatisticsPage } from './../pages/statistics/statistics';
 import { PostPage } from './../pages/post/post';
 import { UserService } from './../services/user-service';
@@ -40,28 +43,22 @@ export class MyApp {
       component: HomePage
     },
     {
-      title: 'Map',
-      icon: 'ios-map',
-      count: 0,
-      component: MapPage
-    },
-    {
-      title: 'Notifications',
-      icon: 'ios-notifications-outline',
-      count: 5,
-      component: NotificationsPage
-    },
-    {
-      title: 'Challenges',
+      title: 'Quests',
       icon: 'ios-browsers-outline',
       count: 0,
       component: ChallengesPage
     },
     {
-      title: 'Coupons',
+      title: 'Gutscheine',
       icon: 'ios-person-outline',
       count: 0,
       component: CouponsPage
+    },
+    {
+      title: 'Rangliste',
+      icon: 'trophy',
+      count: 0,
+      component: RankingPage
     },
     {
       title: 'Statistiken',
@@ -70,7 +67,7 @@ export class MyApp {
       component: StatisticsPage
     },
     {
-      title: 'Settings',
+      title: 'Einstellungen',
       icon: 'ios-settings-outline',
       count: 0,
       component: SettingPage
@@ -84,8 +81,12 @@ export class MyApp {
   ];
 
   constructor(public platform: Platform, public auth: AuthProvider, protected userService: UserService) {
-    this.rootPage = ChallengesPage;
-    
+    if (auth.user == undefined) {
+      this.rootPage = RegisterPage;
+    } else {
+      this.rootPage = HomePage;
+    }
+
     // show splash screen
     Splashscreen.show();
 
@@ -107,27 +108,35 @@ export class MyApp {
         windows: {}
       });
 
-      push.on('registration', (data) => {
-        this.auth.registrationId = data.registrationId;
-      });
+      if (push.on) {
 
-      push.on('notification', (response: any) => {
+        push.on('registration', (data) => {
+          this.auth.registrationId = data.registrationId;
+        });
 
-        let data = response.additionalData;
-        
-        if(!response.additionalData.foreground) {
-          return;
-        }
-        this.nav.push(PostPage, {id: parseInt(data.postId)});
-      })
+        push.on('notification', (response: any) => {
 
-      push.on('error', (e) => {
-        console.log(e.message);
-      });
+          let data = response.additionalData;
 
-      if (auth.user != undefined) {
-        this.rootPage = HomePage;
+          if (!response.additionalData.foreground) {
+            return;
+          }
+
+          if(data.postId != undefined) {
+            this.nav.push(PostPage, { id: parseInt(data.postId) });
+          } else if(data.challengeId != undefined) {
+            this.nav.push(ChallengeDetailPage, { id: parseInt(data.challengeId) });
+          }
+
+          
+        })
+
+        push.on('error', (e) => {
+          console.log(e.message);
+        });
       }
+
+
       // hide splash screen
       this.hideSplashScreen();
     });

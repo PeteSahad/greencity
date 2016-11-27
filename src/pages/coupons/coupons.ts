@@ -24,4 +24,10 @@ export class CouponsPage {
   viewCoupon(couponId) {
     this.nav.push(CouponDetailPage, {id: couponId})
   }
+
+   doRefresh(refresher) {
+    this.coups.load().then((posts: any[]) => {
+      refresher.complete();
+    });
+  }
 }

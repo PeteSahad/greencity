@@ -7,7 +7,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Tracking
+      {{title}}
     </ion-title>
     <ion-buttons start>
       <button ion-button (click)="dismiss()">
@@ -38,6 +38,6 @@
     <button ion-fab color="primary" *ngIf="status == 2" (click)="publishTracking()"><ion-icon name="ios-share"></ion-icon></button>
   </ion-fab>
   <ion-fab left bottom padding *ngIf="status == 2">
-    <button ion-fab mini color="secondary" (click)="startTracking()"><ion-icon name="ios-play"></ion-icon></button>
+    <button ion-fab mini color="secondary" (click)="startTracking(false)"><ion-icon name="ios-play"></ion-icon></button>
   </ion-fab>
 </ion-content>

@@ -1,3 +1,4 @@
+import { ApiProvider } from './../providers/api-provider';
 import { Platform } from 'ionic-angular';
 import { AuthProvider } from './../providers/auth-provider';
 import { Geolocation, Transfer } from 'ionic-native';
@@ -10,26 +11,24 @@ export class PostService {
 
   posts: any[];
   api: string = 'http://greencity.dnsv.eu/app_dev.php';
-  fileTransfer: Transfer = new Transfer();
 
-  constructor(public http: Http, public auth: AuthProvider, platform: Platform) {
+
+  constructor(protected apiService: ApiProvider, public http: Http, public auth: AuthProvider, platform: Platform) {
     platform.ready().then(() => {
-      this.fileTransfer = new Transfer();
     })
     this.posts = [];
     this.load();
   }
 
-  load(category = 0) {
-    return new Promise(resolve => {
-      Geolocation.getCurrentPosition().then(position => {
-        this.http.post(this.api + '/posts', { userId: this.auth.user.id, latitude: position.coords.latitude, longitude: position.coords.longitude, category: category })
-          .map(res => res.json()).subscribe(data => {
-            this.posts = data;
-            resolve(data);
-          })
-      })
-    });
+  load(category = 0, page = 1, infinite = false) {
+    return this.apiService.get('/posts', { category: category, page: page }).then((posts: any) => {
+      if (infinite == true) {
+        this.posts = this.posts.concat(posts.items);
+      } else {
+        this.posts = posts.items;
+      }
+      return this.posts;
+    })
   }
 
   getComments(postId) {
@@ -41,14 +40,11 @@ export class PostService {
   }
 
   getUserPosts(id) {
-    return new Promise(resolve => {
-      this.http.get(this.api + '/posts?userId=' + id).map(res => res.json()).subscribe((posts) => {
-        resolve(posts);
-      })
-    })
+    return this.apiService.get('/userposts', { 'userId': id })
   }
 
   addComment(postId, userId, comment, image?) {
+    const fileTransfer: Transfer = new Transfer();
     return new Promise(resolve => {
       if (image) {
 
@@ -61,7 +57,7 @@ export class PostService {
             postId: postId
           }
         };
-        this.fileTransfer.upload(image, this.api + '/comment', options)
+        fileTransfer.upload(image, this.api + '/comment', options)
           .then((data) => {
             let resp = JSON.parse(data.response);
             resolve(resp);
@@ -138,17 +134,16 @@ export class PostService {
   }
 
   createFromTracking(data) {
-    return new Promise(resolve => {
-      this.http.post(this.api + '/post', data).map(res => res.json()).subscribe((post) => {
-        this._addPost(post);
-        resolve(data);
-      })
+    return this.apiService.post('/post', data).then((post) => {
+      this._addPost(post);
+      return post;
     })
   }
 
   createFromCamera(data) {
 
     return new Promise(resolve => {
+      const fileTransfer: Transfer = new Transfer();
       Geolocation.getCurrentPosition().then(position => {
         let options = {
           fileKey: 'file',
@@ -162,7 +157,7 @@ export class PostService {
             type: data.type
           }
         };
-        this.fileTransfer.upload(data.picture, this.api + '/post', options)
+        fileTransfer.upload(data.picture, this.api + '/post', options)
           .then((data) => {
             let post = JSON.parse(data.response);
             this._addPost(post);

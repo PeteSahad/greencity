@@ -22,9 +22,8 @@
       <ion-option value="0">Alle Kategorien</ion-option>
       <ion-option value="{{cat.id}}" *ngFor="let cat of cats.categories">
         <ion-icon name="{{cat.icon}}"></ion-icon> {{cat.name}}
-        </ion-option>
+      </ion-option>
     </ion-select>
-
   </ion-toolbar>
 </ion-header>
 
@@ -39,7 +38,7 @@
         <img *ngIf="post.userpicture" [src]="post.userpicture">
       </ion-avatar>
       <h2 (click)="viewUser(post.userId)">{{ post.username }}</h2>
-      <p>{{ post.created_at }}</p>
+      <p>{{ post.createdAt | date:'dd.MM.yy HH:mm'}}</p>
     </ion-item>
     <img class="full-image" *ngIf="isTracking(post) || isPosition(post)" (click)="viewPost(post.postId)" src="https://maps.googleapis.com/maps/api/staticmap?{{ staticMap(post) }}">
     <img class="full-image" *ngIf="post.data && post.type == 'camera'" (click)="viewPost(post.postId)" src="http://greencity.dnsv.eu/uploads/{{ post.data }}">
@@ -52,27 +51,26 @@
       <div>
         <a (click)="viewPost(post.postId)" class="subdued">{{ post.likeCount}} Likes</a>
         <a (click)="viewPost(post.postId)" class="subdued" margin-left>{{ post.commentCount}} Comments</a>
-        <a (click)="viewPost(post.postId)" class="subdued" margin-left>Veröffentlicht am {{ post.createdAt | date:'dd.MM.yy HH:mm'}}</a>
       </div>
     </ion-item>
 
     <ion-grid class="post-actions">
       <ion-row>
-        <ion-col width-33 text-center (click)="toggleLike(post)">
+        <ion-col width-50 text-center (click)="toggleLike(post)">
           <ion-icon name="leaf" color="primary" *ngIf="post.alreadyLiked > 0"></ion-icon>
           <ion-icon name="thumbs-up" *ngIf="post.alreadyLiked == 0"></ion-icon>
         </ion-col>
-        <ion-col width-33 text-center (click)="viewPost(post.postId)">
+        <ion-col width-50 text-center (click)="viewPost(post.postId)">
           <ion-icon name="chatboxes"></ion-icon>
         </ion-col>
-        <ion-col width-33 text-center>
-          <ion-icon name="share-alt"></ion-icon>
 
-        </ion-col>
       </ion-row>
     </ion-grid>
 
   </ion-card>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
 
 

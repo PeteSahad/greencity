@@ -14,6 +14,7 @@ export class User {
   id: number;
   username: string;
   picture: string;
+  options: any;
 }
 
 @Injectable()
@@ -29,6 +30,10 @@ export class AuthProvider {
 
   logout() {
     localStorage.removeItem('user');
+  }
+
+  save() {
+    localStorage.setItem('user', JSON.stringify(this.user));
   }
 
   register(position:Position) {

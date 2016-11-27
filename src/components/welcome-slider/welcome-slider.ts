@@ -24,14 +24,15 @@ export class WelcomeSliderComponent {
 
   slides: any[] = [
     {
-      title: "Willkommen, " + this.username,
+      title: "Willkommen!",
       picture: "1.png",
-      text: "Lass uns gemeinsam mal endlich was für die Stadt machen.",
+      text: "Die Welt steht vor einer Klimakatastrophe. Lasst uns gemeinsam etwas dagegen tun!",
       hint: "Deinen Benutzernamen kannst du in den Einstellungen ändern."
     },
     {
-      title: "Ecos",
+      title: "ECOs",
       picture: "2.jpg",
+      icon: '<ion-icon name="ion-power" id="test" color="primary"></ion-icon>',
       text: "Für jede Aktion die du durchführst verdienst du dir ECOs. Dies ist eine kleine interne Währung. Du kannst nicht gleich alle Aktionen ausführen." +
       "Für manche Aktionen benötigst du erst eine gewisse Erfahrung."
     },

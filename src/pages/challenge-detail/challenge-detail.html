@@ -33,17 +33,21 @@
         </button>
       </ion-item>
       <ion-item-divider>
-        Statistiken
+        Fortschritt
       </ion-item-divider>
       <ion-item>
-        Dein Fortschritt
+        Deiner 
+        <progress value="{{progress.user.value}}" max="{{progress.user.max}}"></progress>
       </ion-item>
       <ion-item>
-        Bezirksfortschritt
+        Bezirk
+        <progress value="{{progress.zip.value}}" max="{{progress.zip.max}}"></progress>
       </ion-item>
       <ion-item>
-        Stadtfortschritt
-      </ion-item>
+        Stadt
+        <progress value="{{progress.city.value}}" max="{{progress.city.max}}"></progress>
+      </ion-item>     
+
 
     </ion-list>
 

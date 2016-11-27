@@ -1,13 +1,41 @@
-<ion-header>
+<ion-header *ngIf="coupon">
   <ion-navbar color="primary" >
     <button  ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Coupon Detail</ion-title>
+    <ion-title>{{coupon.title}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <div class="map-50">
-   
+
+  <div id="map-50">
+      
   </div>
+  <div *ngIf="coupon" padding>
+  <p>{{ coupon.description}}</p>
+  <ion-list>
+      <ion-item>
+        <ion-icon item-left name="ios-calendar-outline"></ion-icon>
+        Einlösbar bis
+        <ion-badge item-right>{{coupon.valid_until | date:'dd.MM.yy'}}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-icon item-left name="ios-pricetags-outline"></ion-icon>
+        Kosten
+        <ion-badge item-right>{{coupon.ecos}} ECOs</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-icon item-left name="ios-cart-outline"></ion-icon>
+        nocch verfügbar
+        <ion-badge item-right [color]="maxQuantityColor(coupon)" *ngIf="coupon.max_transactions > 0">{{coupon.max_transactions - coupon.transactions.length}} / {{coupon.max_transactions}}</ion-badge>
+        <ion-badge item-right color="primary" *ngIf="coupon.max_transactions == 0">unbegrenzt</ion-badge>
+
+      </ion-item>
+  </ion-list>
+
+  <button ion-button full color="primary" large (click)="useCoupon()">
+    Jetzt einlösen!
+  </button>
+  </div>
+
 </ion-content>

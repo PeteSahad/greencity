@@ -9,29 +9,28 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Coupons</ion-title>
+    <ion-title>Gutscheine</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
-  <div class="search-form">
-    <ion-icon name="ios-search"></ion-icon>
-    <ion-input type="text" placeholder="{{ coups.coupons.length }} coupons"></ion-input>
-  </div>
 
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-list class="list-full-border">
 
 
 
     <ion-item *ngFor="let coupon of coups.coupons" (click)="viewCoupon(coupon.id)">
-      <ion-avatar item-left (click)="viewUser(coupon.id)">
-        <img class="profile-picture" src="{{ coupon.face }}" alt="" />
-      </ion-avatar>
 
       <div class="post-content">
-        <h3 color="primary" (click)="viewUser(coupon.id)">{{ coupon.title }}</h3>
+        <h3 color="primary" >{{ coupon.title }}</h3>
         <p>{{ coupon.description}}</p>
-        <ion-badge color="danger">{{coupon.ecos}} ECOs</ion-badge>
+        <ion-badge color="secondary" item-right>{{coupon.ecos}} ECOs</ion-badge>
+        <ion-badge color="secondary" item-right *ngIf="coupon.maxTransactions > 0">{{coupon.maxTransactions - coupon.done}} / {{ coupon.maxTransactions }} verfügbar</ion-badge>
+        <ion-badge color="primary" item-right *ngIf="coupon.maxTransactions == 0">unbegrenzt verfügbar</ion-badge>
+        <ion-badge [color]="getDateColor(coupon)" *ngIf="coupon.valid_until">{{coupon.valid_until | date:'dd.MM.yy'}}</ion-badge>
       </div>
 
     </ion-item>

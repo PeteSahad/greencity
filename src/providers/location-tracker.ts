@@ -4,6 +4,16 @@ import { Platform } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
+export class LocationTrackerResult {
+  time: number;
+  distance: number;
+  co2: number;
+  kcal: number;
+  ecos: number;
+  costs: number;
+  umweltCosts: number;
+  folgeCosts: number;
+}
 
 @Injectable()
 export class LocationTracker {
@@ -18,6 +28,11 @@ export class LocationTracker {
   co2: number = 0;
   kcal: number = 0;
   ecos: number = 0;
+  costs: number = 0;
+  umweltCosts: number = 0;
+  folgeCosts: number = 0;
+
+  start: boolean = false;
 
   constructor(protected platform: Platform) {
     this.positionObserver = null;
@@ -36,13 +51,12 @@ export class LocationTracker {
       desiredAccuracy: 0,
       stationaryRadius: 1,
       distanceFilter: 1,
-      debug: true,
+      debug: false,
       interval: 5000
     };
 
     BackgroundGeolocation.configure((location) => {
       this.positions.push(location);
-      console.log(this.positions.length);
       if (this.positions.length > 1) {
         this.refreshStats();
       }
@@ -90,13 +104,30 @@ export class LocationTracker {
     this.time = this.getDiffTime(position1.time, position2.time);
     this.ecos = this.calcEcoin(position1, position2);
     this.distance = this.getDistance(position1, position2);
+    this.co2 = this.calcCo2(this.distance);
+    this.costs = this.calcCosts(this.distance);
+    this.umweltCosts = this.distance * 0.03;
+    this.folgeCosts = this.distance * 0.17;
   }
 
   protected calcEcoin(position1: Coordinates, position2) {
-    //let distance = this.getDistance(position1, position2)
-    
+    let distance = this.getDistance(position1, position2);
 
-    return 0;
+    return distance / 100;
+  }
+
+  calcCosts(distance) {
+    let costs = 0;
+    costs = (distance * 0.36);
+
+    return costs;
+  }
+
+  calcCo2(distance) {
+    let co2 = 0;
+    co2 = ((10/100) * distance * 2.5);
+
+    return co2;
   }
 
   calcKcal(position1, position2) {
@@ -129,7 +160,7 @@ export class LocationTracker {
     kg = 70; //weight
     cb = kg * selPaceWFM * hr; //kcal 
 
-    return cb;
+    return cb * 100;
   }
 
   getDiffTime(time1, time2) {
@@ -171,6 +202,23 @@ export class LocationTracker {
 
   private _deg2rad(deg) {
     return deg * (Math.PI / 180)
+  }
+
+  getResult() {
+    let result = {
+      time: this.time,
+      co2: this.co2,
+      kcal: this.kcal,
+      distance: this.distance,
+      umweltCosts: this.umweltCosts,
+      folgeCosts: this.folgeCosts,
+      ecos: this.ecos,
+      costs: this.costs
+    }
+
+    console.log(result);
+
+    return result;
   }
 
 }

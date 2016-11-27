@@ -5,7 +5,7 @@ import { Geolocation } from 'ionic-native';
 import { CategoryProvider } from './../../providers/category-provider';
 import { CameraComponent } from './../../components/camera/camera';
 import { Component } from '@angular/core';
-import { NavController, ModalController, Platform } from 'ionic-angular';
+import { NavController, ModalController, Platform, AlertController } from 'ionic-angular';
 import { PostService } from '../../services/post-service';
 import { PostPage } from '../post/post';
 import { UserPage } from '../user/user';
@@ -26,9 +26,7 @@ export class HomePage {
 
   public view: string = 'map';
 
-
-  map: any;
-  markers: any[] = [];
+  page: number = 1;
 
   hideSettings: boolean = true;
   selectedCategories: number = 0;
@@ -36,11 +34,11 @@ export class HomePage {
   constructor(public nav: NavController,
     public postService: PostService,
     protected authService: AuthProvider,
-    public modalCtrl:
-      ModalController,
-    public cats:
-      CategoryProvider,
-    protected platform: Platform) {
+    public modalCtrl: ModalController,
+    public cats: CategoryProvider,
+    protected alert: AlertController
+
+  ) {
     // this.loadMap();
   }
 
@@ -48,40 +46,6 @@ export class HomePage {
 
   }
 
-  refreshMap() {
-    setTimeout(() => {
-      google.maps.event.trigger(this.map, 'resize');
-    }, 10)
-  }
-
-  loadMap() {
-    this.platform.ready().then(() => {
-      Geolocation.getCurrentPosition().then(position => {
-        let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-        let mapOptions = {
-          center: latLng,
-          zoom: 17,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
-
-        this.map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
-        google.maps.event.trigger(this.map, 'resize');
-
-        this.postService.posts.forEach((post) => {
-          let marker = new google.maps.Marker({
-            position: new google.maps.LatLng(post.latitude, post.longitude),
-            map: this.map,
-            itle: 'Aktuelle Position'
-          })
-
-          this.markers.push(marker);
-        })
-      })
-    })
-
-
-  }
 
   toggleLike(post) {
     // if user liked
@@ -126,6 +90,9 @@ export class HomePage {
   addPosition(cat) {
     let modal = this.modalCtrl.create(PositionComponent, { showCategories: false, showText: true, title: cat.menu, category: cat });
     modal.onDidDismiss((data) => {
+      if (data == false || data == undefined) {
+        return;
+      }
       return this.postService.createFromPosition(data);
     })
     modal.present();
@@ -136,6 +103,9 @@ export class HomePage {
   addIssue(cat) {
     let modal = this.modalCtrl.create(CameraComponent, { showCategories: false, showText: true, title: cat.menu, category: cat });
     modal.onDidDismiss((data) => {
+      if (data == false || data == undefined) {
+        return;
+      }
       return this.postService.createFromCamera(data);
     })
     modal.present();
@@ -144,6 +114,10 @@ export class HomePage {
   addTracking(cat) {
     let modal = this.modalCtrl.create(TrackingComponent, { title: cat.menu, category: cat });
     modal.onDidDismiss((data) => {
+      console.log(data);
+      if (data == false || data == undefined) {
+        return;
+      }
       return this.postService.createFromTracking(data);
     })
     modal.present();
@@ -216,18 +190,26 @@ export class HomePage {
   }
 
   doRefresh(refresher) {
-    this.postService.load(this.selectedCategories).then((posts: any[]) => {
-      this.markers.forEach((marker) => {
-        marker.setMap(null);
-      })
-      posts.forEach((post: any) => {
-        /*let marker = new google.maps.Marker({
-          position: new google.maps.LatLng(post.latitude, post.longitude),
-          map: this.map,
-          title: 'Aktuelle Position'
-        })*/
-      })
+    this.page = 1;
+    this.postService.load(this.selectedCategories, this.page).then((posts: any[]) => {
+      refresher.complete();
+    }).catch((error) => {
       refresher.complete();
     });
+  }
+
+  doInfinite(infiniteScroll) {
+    this.page++;
+    this.postService.load(this.selectedCategories, this.page, true).then((posts) => {
+      infiniteScroll.complete();
+    }).catch((error) => {
+      infiniteScroll.complete();
+      let alert = this.alert.create({
+        title: 'Oops',
+        subTitle: 'Es wurden keine weiteren Einträge gefunden :-('
+      })
+      alert.present();
+      this.page--;
+    })
   }
 }

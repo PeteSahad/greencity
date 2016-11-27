@@ -16,59 +16,84 @@ import 'rxjs/add/operator/map';
 export class ApiProvider {
 
   private apiUrl: string = 'http://greencity.dnsv.eu/app_dev.php'
-  private fileTransfer:Transfer
 
-  constructor(public http: Http, protected alert: AlertController, protected auth: AuthProvider, platform:Platform) {
+  private location: any;
+
+  constructor(public http: Http, protected alert: AlertController, protected auth: AuthProvider, platform: Platform) {
     platform.ready().then(() => {
-      this.fileTransfer = new Transfer();
+
+
     })
   }
 
-  upload(url, file, options) {
+  getLocation() {
     return new Promise((resolve, reject) => {
       Geolocation.getCurrentPosition().then((position) => {
-        let options = {
+        resolve(position);
+      }, error => {
+        let alert = this.alert.create({
+          title: "Fehler",
+          subTitle: "Dein Standort konnte nicht ermittelt werden. Bitte aktiviere deinen Standort und probiere es erneut.",
+          buttons: ['OK']
+        })
+        alert.present();
+        reject(error);
+      })
+    })
+
+  }
+
+  upload(url, file, options) {
+    const fileTransfer = new Transfer();
+    return new Promise((resolve, reject) => {
+      this.getLocation().then((position: any) => {
+        let params = {
           fileKey: 'file',
           fileName: 'image.jpg',
           params: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-            user: this.auth.user.id
           }
         };
+        return params;
+      }).then((params) => {
+
+        if (this.auth.user != undefined) {
+          Object.assign(params.params, { user: this.auth.user.id });
+        }
 
         let keys = Object.keys(options);
         keys.forEach((key) => {
-          options.params[key] = options[key];
+          params.params[key] = options[key];
         });
 
-        return options;
-
-      }).then((options) => {
-        return this.fileTransfer.upload(file, this.apiUrl + url, options)
-
-      }).then((response) => {
+        return fileTransfer.upload(file, this.apiUrl + url, params)
+      }).then((response: any) => {
         let data = JSON.parse(response.response);
         resolve(data);
       }).catch((error) => {
         reject(error);
       });
+
     })
-
-
   }
 
   post(url, body, options?) {
     return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition().then((position) => {
+      this.getLocation().then((position: any) => {
         Object.assign(body, {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          user: this.auth.user.id
         });
-
+      }).then(() => {
+        if (this.auth.user != undefined) {
+          Object.assign(body, { user: this.auth.user.id });
+        }
+      }).then(() => {
         this.http.post(this.apiUrl + url, body, options).map(res => res.json())
-          .subscribe(value => resolve(value), error => {
+          .subscribe(value => {
+            resolve(value)
+          }, error => {
             let alertWindow = this.alert.create({
               title: 'Fehler',
               subTitle: 'Es besteht keine Verbindung zum Server. Bitte prüfe dein Internetzugang.',
@@ -77,28 +102,31 @@ export class ApiProvider {
             alertWindow.present();
             reject(error);
           });
-      }).catch((error) => {
-        let alert = this.alert.create({
-          title: "Fehler",
-          subTitle: "Dein Standort konnte nicht ermittelt werden. Bitte aktiviere deinen Standort und probiere es erneut.",
-          buttons: ['OK']
-        })
-        alert.present();
       })
+
+
     })
+
 
 
   }
 
   get(url, params, options?) {
     return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition().then((position) => {
+      this.getLocation().then((position: any) => {
         Object.assign(params, {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          user: this.auth.user.id
         });
-        this.http.get(this.apiUrl + url + this._prepareParams(params), options)
+
+        if (this.auth.user != undefined) {
+          Object.assign(params, { user: this.auth.user.id });
+        }
+
+        return params;
+
+      }).then((parameter) => {
+        this.http.get(this.apiUrl + url + this._prepareParams(parameter), options)
           .map(res => res.json())
           .subscribe(value => resolve(value), error => {
             let alertWindow = this.alert.create({
@@ -107,16 +135,13 @@ export class ApiProvider {
               buttons: ['OK']
             });
             alertWindow.present();
+
             reject(error);
           });
-      }).catch((error) => {
-        let alert = this.alert.create({
-          title: "Fehler",
-          subTitle: "Dein Standort konnte nicht ermittelt werden. Bitte aktiviere deinen Standort und probiere es erneut.",
-          buttons: ['OK']
-        })
-        alert.present();
       })
+
+
+
     })
   }
 

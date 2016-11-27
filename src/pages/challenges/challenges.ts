@@ -1,8 +1,8 @@
 import { ChallengeDetailPage } from './../challenge-detail/challenge-detail';
 import { ChallengeProvider } from './../../providers/challenge-provider';
-import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
-import {UserPage} from '../user/user';
+import { Component } from '@angular/core';
+import { NavController } from 'ionic-angular';
+import { UserPage } from '../user/user';
 
 /*
  Generated class for the LoginPage page.
@@ -18,19 +18,24 @@ export class ChallengesPage {
   public posts: any;
   challenges: any[];
 
-  constructor(public nav: NavController, public chall:ChallengeProvider) {
-    
+  interval: string = 'day';
+  title: string = 'Tägliche Quests'
+
+  constructor(public nav: NavController, public chall: ChallengeProvider) {
+
   }
 
   ionViewDidLoad() {
-    this.chall.load().then((challenges:any[]) => {
+    this.chall.load().then((challenges: any[]) => {
       this.challenges = challenges;
+    }).catch(error => {
+      console.log(error);
     });
   }
 
   toggleLike(post) {
     // if user liked
-    if(post.liked) {
+    if (post.liked) {
       post.likeCount--;
     } else {
       post.likeCount++;
@@ -41,13 +46,26 @@ export class ChallengesPage {
 
   // on click, go to post detail
   openChallenge(challengeId) {
-    console.log(challengeId);   
-    this.nav.push(ChallengeDetailPage, {id: challengeId})
+    console.log(challengeId);
+    this.nav.push(ChallengeDetailPage, { id: challengeId })
     console.log(challengeId);
   }
 
   // on click, go to user timeline
   viewUser(userId) {
-    this.nav.push(UserPage, {id: userId})
+    this.nav.push(UserPage, { id: userId })
+  }
+
+  doRefresh(refresher) {
+    this.chall.load().then((challenges: any[]) => {
+      this.challenges = challenges;
+      refresher.complete();
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
+  selectedSegment(title) {
+    this.title = title
   }
 }
