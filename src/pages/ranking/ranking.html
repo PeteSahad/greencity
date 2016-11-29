@@ -10,23 +10,62 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Rangliste</ion-title>
+    <ion-buttons end>
+      <eco-header></eco-header>
+    </ion-buttons>
   </ion-navbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="interval">
+      <ion-segment-button value="once" (ionSelect)="selectedSegment('Benutzer')">
+        Benutzer
+      </ion-segment-button>
+      <ion-segment-button value="regular" (ionSelect)="selectedSegment('Bezirk')">
+        Bezirke
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-refresher (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-  <ion-list class="list-full-border">
-    <ion-item *ngFor="let rank of ranking; let i = index;" (click)="viewUser(rank.userId)" [color]="isUser(rank.userId) ? 'primary' : ''">
-      <ion-avatar item-left>
-        <img *ngIf="rank.userpicture" [src]="rank.userpicture">
-      </ion-avatar>
-      <h2 [color]="isUser(rank.userId) ? '' : 'primary'">{{getRank(i)}}. {{rank.username}}</h2>
-      <ion-badge item-right>{{rank.amount}}</ion-badge>
-    </ion-item>
-  </ion-list>
-  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+
+  <div [ngSwitch]="interval">
+    <div *ngSwitchCase="'once'">
+      <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+      <ion-list class="list-full-border">
+        <ion-item *ngFor="let rank of ranking; let i = index;" (click)="viewUser(rank.userId)" [color]="isUser(rank.userId) ? 'primary' : ''">
+          <ion-avatar item-left *ngIf="rank.userpicture">
+            <img *ngIf="rank.userpicture" [src]="rank.userpicture">
+          </ion-avatar>
+          <h2 [color]="isUser(rank.userId) ? '' : 'primary'">{{getRank(i)}}. {{rank.username}}</h2>
+          <ion-badge item-right>{{rank.amount}}</ion-badge>
+        </ion-item>
+      </ion-list>
+      <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+
+    <div *ngSwitchCase="'regular'">
+      <ion-refresher (ionRefresh)="doRefreshDistrict($event)">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+      <ion-list class="list-full-border">
+        <ion-item *ngFor="let rank of districtranking; let i = index;" [color]="isDistrict(rank.userId) ? 'primary' : ''">
+          <ion-avatar item-left *ngIf="rank.userpicture">
+            <img *ngIf="rank.userpicture" [src]="rank.userpicture">
+          </ion-avatar>
+          <h2 [color]="isDistrict(rank.userId) ? '' : 'primary'">{{getRank(i)}}. {{rank.username}}</h2>
+          <ion-badge item-right>{{rank.amount}}</ion-badge>
+        </ion-item>
+      </ion-list>
+      <ion-infinite-scroll (ionInfinite)="doInfiniteDistrict($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+
+
+
+  </div>
 </ion-content>

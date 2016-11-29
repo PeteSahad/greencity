@@ -54,44 +54,65 @@ export class CouponDetailPage {
 
   useCoupon() {
     let alert1 = this.alert.create({
-      title: 'Bidde!',
-      subTitle: 'Viel Spaß damit! Der Betrag wurde von Deinem Konto abgezogen.'
+      title: 'Kauf',
+      subTitle: 'Bevor du den Coupon einlösen kannst muss der Händler den kauf akzeptieren indem er das Passwort eingibt.',
+      inputs: [
+        {
+          type: "password",
+          name: "pw",
+          placeholder: "Password"
+        }
+      ],
+      buttons: [{
+        text: "OK",
+        handler: (data) => {
+          if (data.pw == 'nuf1337') {
+            this.api.post('/usecoupon', { couponId: this.coupon.id }).then((response) => {
+              if (response == false) {
+
+                let alert2 = this.alert.create({
+                  title: 'Oops!',
+                  subTitle: 'Es ist ein Fehler aufgetreten. Ist dein Konto evt. nicht gedeckt?'
+                })
+
+                return alert2.present();
+              }
+              this.coupon.transactions.push(response);
+              alert1.present();
+            })
+          } else {
+            let alert2 = this.alert.create({
+              title: 'Falsches Passwort!',
+              subTitle: 'Du hast ein falsches Passwort eingegeben.'
+            })
+            return false;
+          }
+        }
+      }]
     })
 
-    let alert2 = this.alert.create({
-      title: 'Oops!',
-      subTitle: 'Es ist ein Fehler aufgetreten. Ist dein Konto evt. nicht gedeckt?'
-    })
-    this.api.post('/usecoupon', { couponId: this.coupon.id }).then((response) => {
-      if(response == false) {
-       return alert2.present();
-      }
-      this.coupon.transactions.push(response);
-      alert1.present();
-    }).catch((error) => {
-      alert2.present();
-    })
+
   }
 
   maxQuantityColor(coupon) {
     let max = coupon.max_transactions;
     let done = coupon.transactions.length;
-    if(max == 0) {
+    if (max == 0) {
       return 'primary';
     }
     let percentage = done / max;
-    if(percentage <= 0.3) {
+    if (percentage <= 0.3) {
       return 'primary';
-    } else if(percentage <= 0.7) {
+    } else if (percentage <= 0.7) {
       return 'secondary'
-    } 
+    }
 
-    return 'danger';  
+    return 'danger';
 
   }
 
   getDateColor() {
-    
+
   }
 
 }

@@ -18,9 +18,13 @@ export class RankingPage {
 
   ranking: any;
   page: number = 1;
+  districtranking: any;
+  districtpage: number = 1;
+  interval: string = 'once';
 
   constructor(public navCtrl: NavController, protected api: ApiProvider, protected auth: AuthProvider) {
     this.api.get('/ranking', { interval: 'week', page: this.page }).then((ranking: any) => this.ranking = ranking.items);
+    this.api.get('/districtranking', { interval: 'week', page: this.districtpage }).then((ranking: any) => this.districtranking = ranking.items);
   }
 
   ionViewDidLoad() {
@@ -39,6 +43,10 @@ export class RankingPage {
     return false;
   }
 
+  isDistrict(districtId) {
+    return this.auth.user.district.id == districtId ? true : false;
+  }
+
   getRank(i) {
     return parseInt(i) + 1;
   }
@@ -53,6 +61,8 @@ export class RankingPage {
     });
   }
 
+  
+
   doInfinite(infiniteScroll) {
     this.page++;
     this.api.get('/ranking', { interval: 'week', page: this.page }).then((ranking: any) => {
@@ -61,6 +71,37 @@ export class RankingPage {
     }).catch(() => {
       infiniteScroll.complete();
     });
+  }
+
+
+  doRefreshDistrict(refresher) {
+    this.page = 1;
+    this.api.get('/districtranking', { interval: 'week', page: this.districtpage }).then((ranking: any) => {
+      this.districtranking = ranking.items
+      refresher.complete();
+    }).catch(() => {
+      refresher.complete();
+    });
+  }
+
+  
+
+  doInfiniteDistrict(infiniteScroll) {
+    this.page++;
+    this.api.get('/districtranking', { interval: 'week', page: this.districtpage }).then((ranking: any) => {
+      this.districtranking = this.ranking.concat(ranking.items);
+      infiniteScroll.complete();
+    }).catch(() => {
+      infiniteScroll.complete();
+    });
+  }
+
+  selectedSegment(text) {
+    if(text == 'Benutzer') {
+      this.interval = 'once';
+    } else {
+      this.interval = 'regular';
+    }
   }
 
 }

@@ -7,12 +7,34 @@
 
 <ion-slides pager [options]="options">
 
-  <ion-slide *ngFor="let slide of slides" style="background-color: #fff" >
-    <h2>{{slide.title}}</h2>
-    <img class="picture" [src]="'assets/welcome/' + slide.picture" />
-    <p>{{slide.text}}</p>
-    <button ion-button block *ngIf="slide.showButton" (click)="closeSlider()" color="primary" >Lass mich endlich rein!</button>
-    
+  <ion-slide *ngFor="let slide of slides" style="background-color: #87D37C">
+
+    <ion-card>
+      <ion-item>
+        <h2>{{ slide.title }}</h2>
+      </ion-item>
+      <img class="picture" [src]="'assets/welcome/' + slide.picture" style="max-height: 150px; margin: 0 auto;"/>
+      <ion-item text-wrap class="post-body">
+        <div>
+          <p padding-top padding-bottom>{{slide.text}}</p>
+        </div>
+      </ion-item>
+      <ion-item *ngIf="slide.showButton">
+        <ion-label stacked>Benutzername</ion-label>
+        <ion-input type="text" [(ngModel)]="username" clearInput="true" ></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="slide.showButton">
+        <ion-label stacked>PLZ</ion-label>
+        <ion-input type="text" [(ngModel)]="plz" ></ion-input>
+      </ion-item>
+      <ion-item>
+        <button ion-button block *ngIf="slide.showButton" (click)="closeSlider()" color="primary">Lass mich
+    endlich rein!</button>
+      </ion-item>
+    </ion-card>
+
+
   </ion-slide>
 
 

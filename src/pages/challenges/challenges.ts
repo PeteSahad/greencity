@@ -1,3 +1,4 @@
+import { AuthProvider } from './../../providers/auth-provider';
 import { ChallengeDetailPage } from './../challenge-detail/challenge-detail';
 import { ChallengeProvider } from './../../providers/challenge-provider';
 import { Component } from '@angular/core';
@@ -18,10 +19,10 @@ export class ChallengesPage {
   public posts: any;
   challenges: any[];
 
-  interval: string = 'day';
-  title: string = 'Tägliche Quests'
+  interval: string = 'regular';
+  title: string = 'Wiederkehrende Quests'
 
-  constructor(public nav: NavController, public chall: ChallengeProvider) {
+  constructor(public nav: NavController, public chall: ChallengeProvider, public auth:AuthProvider) {
 
   }
 

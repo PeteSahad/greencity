@@ -6,4 +6,15 @@ page-challenge-detail {
         bottom: 0;
         left: 0;
     }
+
+    .button-inner {
+        word-wrap: break-word;
+        /* height: 150px; */
+        overflow: initial;
+        white-space: initial;
+    }
+
+    button {
+        padding: 3.0em 0.6em
+    }
 }

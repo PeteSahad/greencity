@@ -26,17 +26,17 @@ export class RegisterPage {
 
   register() {
     Geolocation.getCurrentPosition().then((position) => {
-      this.auth.register(position).then((user:any) => {
-        return new Promise((resolve, reject) => {
-          let modal = this.modal.create(WelcomeSliderComponent, { username: user.username });
-          modal.present().then(() => {
-            this.nav.setRoot(HomePage);
-          });
+      this.auth.register(position).then((user: any) => {
 
+        this.auth.dailyTipp = true;
+
+        return new Promise((resolve, reject) => {
+          let modal = this.modal.create(WelcomeSliderComponent);
           modal.onDidDismiss(() => {
-            resolve(true);
+            this.nav.setRoot(HomePage);
           })
-        })        
+          modal.present()
+        })
       });
     }).catch((error) => {
       console.log('Standort konnte nicht bestimmt werden.')

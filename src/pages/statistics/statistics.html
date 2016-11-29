@@ -16,32 +16,27 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Statistiken</ion-title>
-
-
+    <ion-buttons end>
+      <eco-header></eco-header>
+    </ion-buttons>
   </ion-navbar>
-
-
 </ion-header>
-
 <ion-content>
-
-
-
+  <div>
     <div>
-      <div>
-        <div *ngFor="let chart1 of mobile">
-          <h3>{{chart1.specialLabel}}</h3>
-          <chart *ngIf="mobile" [labels]="chart1.labels" [data]="chart1.data" [options]="refreshEco" type="line"></chart>'
-        </div>
-        <div *ngFor="let chart1 of tracking">
-          <h3>{{chart1.specialLabel}}</h3>
-          <chart *ngIf="mobile" [labels]="chart1.labels" [data]="chart1.data" [options]="refreshEco" type="line"></chart>'
-        </div>
-      
+      <div *ngFor="let chart1 of mobile">
+        <h3>{{chart1.specialLabel}}</h3>
+        <chart *ngIf="mobile" [labels]="chart1.labels" [data]="chart1.data" [options]="refreshEco" type="line"></chart>'
       </div>
-    </div>
+      <div *ngFor="let chart1 of tracking">
+        <h3>{{chart1.specialLabel}}</h3>
+        <chart *ngIf="mobile" [labels]="chart1.labels" [data]="chart1.data" [options]="refreshEco" type="line"></chart>'
+      </div>
 
-  
+    </div>
+  </div>
+
+
 
 
 </ion-content>

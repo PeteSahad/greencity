@@ -1,3 +1,5 @@
+import { EcoHeaderComponent } from './../components/eco-header/eco-header';
+import { DailytippProvider } from './../providers/dailytipp-provider';
 import { RankingPage } from './../pages/ranking/ranking';
 import { ProgressbarComponent } from './../components/progressbar/progressbar';
 import { ChallengeDetailPage } from './../pages/challenge-detail/challenge-detail';
@@ -74,7 +76,8 @@ import { ChallengesPage} from '../pages/challenges/challenges';
     Object2array,
     StatisticsPage,
     ProgressbarComponent,
-    RankingPage
+    RankingPage,
+    EcoHeaderComponent
     
 ],
   imports: [
@@ -108,7 +111,8 @@ import { ChallengesPage} from '../pages/challenges/challenges';
     PositionComponent,
     WelcomeSliderComponent,
     StatisticsPage,
-    RankingPage
+    RankingPage,
+    EcoHeaderComponent
 ],
   providers: [
     PostService,
@@ -122,7 +126,8 @@ import { ChallengesPage} from '../pages/challenges/challenges';
     LocationTracker,
     ReminderService,
     ApiProvider,
-    StatsProvider
+    StatsProvider,
+    DailytippProvider
 ]
 })
 export class AppModule {}

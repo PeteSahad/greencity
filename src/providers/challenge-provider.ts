@@ -15,9 +15,7 @@ import 'rxjs/add/operator/map';
 export class ChallengeProvider {
 
   api: string = 'http://greencity.dnsv.eu/app_dev.php'
-  daychallenges: any[];
-  weekchallenges: any[];
-  monthchallenges: any[];
+  regularchallenges: any[];
   oncechallenges: any[];
 
   constructor(protected apiService: ApiProvider) {
@@ -26,9 +24,7 @@ export class ChallengeProvider {
   load() {
     return new Promise((resolve, reject) => {
       this.apiService.get('/challenges', {}).then((data: any) => {
-        this.daychallenges = data.day;
-        this.weekchallenges = data.week;
-        this.monthchallenges = data.month;
+        this.regularchallenges = data.regular;
         this.oncechallenges = data.once;
         resolve(data);
       }).catch((error) => reject(error))

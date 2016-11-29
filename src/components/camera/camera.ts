@@ -57,7 +57,7 @@ export class CameraComponent {
     this.showText = params.get('showText');
     this.picture = params.get('picture');
     this.category = params.get('category');
-    this.title = params.get('title') ? params.get('title') : "Beitrag erstellen";
+    this.title = params.get('title') ? params.get('title') : "Foto machen";
   }
 
   ionViewDidEnter() {

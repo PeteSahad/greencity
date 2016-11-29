@@ -1,3 +1,6 @@
+import { EcoHeaderComponent } from './../../components/eco-header/eco-header';
+import { WelcomeSliderComponent } from './../../components/welcome-slider/welcome-slider';
+import { DailytippProvider } from './../../providers/dailytipp-provider';
 import { PositionComponent } from './../../components/position/position';
 import { AuthProvider } from './../../providers/auth-provider';
 import { TrackingComponent } from './../../components/tracking/tracking';
@@ -36,13 +39,15 @@ export class HomePage {
     protected authService: AuthProvider,
     public modalCtrl: ModalController,
     public cats: CategoryProvider,
-    protected alert: AlertController
+    protected alert: AlertController,
+    protected tipp: DailytippProvider
 
   ) {
-    // this.loadMap();
+   
   }
 
-  ionViewLoaded() {
+  ionViewDidLoad() {
+    this.tipp.load();
 
   }
 

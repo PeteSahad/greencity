@@ -1,4 +1,7 @@
-import { ViewController, NavParams } from 'ionic-angular';
+import { AuthProvider, User } from './../../providers/auth-provider';
+import { ApiProvider } from './../../providers/api-provider';
+import { RankingPage } from './../../../.tmp/pages/ranking/ranking';
+import { ViewController, NavParams, AlertController } from 'ionic-angular';
 import { Component } from '@angular/core';
 
 /*
@@ -15,52 +18,56 @@ export class WelcomeSliderComponent {
 
   text: string;
   username: string = '';
+  plz: string = '';
 
   options: any = {
-    initialSlide: 1,
+    initialSlide: 0,
     loop: false,
     speed: 0
   };
 
   slides: any[] = [
     {
-      title: "Willkommen!",
-      picture: "1.png",
-      text: "Die Welt steht vor einer Klimakatastrophe. Lasst uns gemeinsam etwas dagegen tun!",
+      title: "Tutorial: Quests",
+      picture: "quests.png",
+      text: "Erfülle Quests und verdiene dir ECOs",
       hint: "Deinen Benutzernamen kannst du in den Einstellungen ändern."
     },
     {
-      title: "ECOs",
-      picture: "2.jpg",
-      icon: '<ion-icon name="ion-power" id="test" color="primary"></ion-icon>',
-      text: "Für jede Aktion die du durchführst verdienst du dir ECOs. Dies ist eine kleine interne Währung. Du kannst nicht gleich alle Aktionen ausführen." +
-      "Für manche Aktionen benötigst du erst eine gewisse Erfahrung."
+      title: "Tutorial: Coupons",
+      picture: "coupons.jpg",
+      text: "Tausche deine verdienten ECOs gegen Gutscheine."
     },
     {
-      title: "Challenges",
-      picture: "3.png",
-      text: "Fordere andere Nutzer heraus und verdiene dir ECOs, indem du mehr CO2 einsparst als die anderen Wettkampfteilnehmer.",
-    },
-    {
-      title: "Statistiken",
-      picture: "4.jpg",
-      text: "Erhalte jederzeit einen Überblick über deine Statistiken und vergleiche dich mit den Bewohnern deiner Stadt!"
+      title: "Tutorial: Vergleichen",
+      picture: "rankings.png",
+      text: "Vergleiche Dich mit anderen und finde heraus, welcher Stadtbezirk der grünste ist.",
     },
     { title: "Go Green!",
       picture: "juergen.png",
-      text: "Los gehts :-)",
+      text: "Wähle noch einen Benutzernamen und eine PLZ für die du antreten möchtest.",
       showButton: true
   }
-  ]
+  ];
 
-  constructor(protected viewCtrl:ViewController, navParams:NavParams) {
-    console.log('Hello WelcomeSlider Component');
-    this.text = 'Hello World';
-    this.username = navParams.get('username');
+  
+  constructor(protected viewCtrl:ViewController, navParams:NavParams, protected api:ApiProvider, protected auth:AuthProvider, protected alert: AlertController) {
+    this.username = this.auth.user.username;
+    this.plz = this.auth.user.district.name;     
   }
 
   closeSlider() {
-    this.viewCtrl.dismiss();
+    this.api.post('/updateRegister', {username: this.username, zip: this.plz}).then((data:User) => {
+        this.auth.user = data;
+        this.viewCtrl.dismiss();
+    }).catch((error) => {
+      let alert = this.alert.create({
+        title: 'Oops, Fehler',
+        subTitle: 'Bitte prüfe deinen Benutzernamen und die PLZ und probiere es erneut. Eventuell ist der Benutzername schon vergeben?!'
+      })
+      alert.present();
+    });
+    
   }
 
 }
