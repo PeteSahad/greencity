@@ -1,3 +1,4 @@
+import { ChallengeItemComponent } from './../components/challenge-item/challenge-item';
 import { EcoHeaderComponent } from './../components/eco-header/eco-header';
 import { DailytippProvider } from './../providers/dailytipp-provider';
 import { RankingPage } from './../pages/ranking/ranking';
@@ -77,7 +78,8 @@ import { ChallengesPage} from '../pages/challenges/challenges';
     StatisticsPage,
     ProgressbarComponent,
     RankingPage,
-    EcoHeaderComponent
+    EcoHeaderComponent,
+    ChallengeItemComponent,
     
 ],
   imports: [

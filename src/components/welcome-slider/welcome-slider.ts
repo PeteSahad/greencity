@@ -35,7 +35,7 @@ export class WelcomeSliderComponent {
     },
     {
       title: "Tutorial: Coupons",
-      picture: "coupons.jpg",
+      picture: "coupons.png",
       text: "Tausche deine verdienten ECOs gegen Gutscheine."
     },
     {

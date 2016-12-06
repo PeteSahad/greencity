@@ -24,4 +24,15 @@ export class CategoryProvider {
     });
   }
 
+  getMobility() {
+    let cat;
+    this.categories.forEach((value) => {
+      if(value.id == 3) {
+        cat = value;
+      }
+    })
+
+    return cat;
+  }
+
 }

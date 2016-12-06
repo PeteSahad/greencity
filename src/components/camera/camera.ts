@@ -1,6 +1,6 @@
 import { AuthProvider } from './../../providers/auth-provider';
 import { CategoryProvider } from './../../providers/category-provider';
-import { ViewController, NavParams, Platform, Keyboard } from 'ionic-angular';
+import { ViewController, NavParams, Platform, Keyboard, AlertController } from 'ionic-angular';
 import { Component, NgZone } from '@angular/core';
 import { Camera as C, CameraPreview, Toast, CameraPreviewRect } from 'ionic-native';
 
@@ -50,7 +50,8 @@ export class CameraComponent {
     protected zone: NgZone,
     public keyboard: Keyboard,
     protected cats: CategoryProvider,
-    protected auth: AuthProvider
+    protected auth: AuthProvider,
+    protected alert: AlertController
   ) {
 
     this.showCategories = params.get('showCategories');
@@ -70,7 +71,7 @@ export class CameraComponent {
       destinationType: 1,
       targetWidth: 1920,
       targetHeight: 1920,
-      allowEdit : true,
+      allowEdit: true,
       correctOrientation: true,
       saveToPhotoAlbum: false
     }).then((value) => {
@@ -90,13 +91,20 @@ export class CameraComponent {
   }
 
   primaryAction() {
-
+    console.log(this.category);
     if (this.category == undefined && this.showCategories) {
-      Toast.show('Bitte wähle eine Kategorie zu Deinem Eintrag.', '5000', 'center');
+      let alert = this.alert.create({
+        title: 'Kategorie',
+        subTitle: 'Bitte wähle noch eine Kategorie.'
+      })
+      return alert.present()
     } else if (this.category == undefined && this.showCategories == false) {
       this.viewCtrl.dismiss({ picture: this.picture, text: this.text, user: this.auth.user.id, type: 'camera' });
     } else {
-      this.viewCtrl.dismiss({ picture: this.picture, category: this.category.id, text: this.text, user: this.auth.user.id, type: 'camera' });
+      if(this.category.id != undefined) {
+        this.category = this.category.id
+      }
+      this.viewCtrl.dismiss({ picture: this.picture, category: this.category, text: this.text, user: this.auth.user.id, type: 'camera' });
     }
 
     //this.picture = false; #reset for next picture?

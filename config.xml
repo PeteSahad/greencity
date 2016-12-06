@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="de.fpo.greencity" version="1.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="de.fpo.greencity" version="1.1.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Green City</name>
-    <description>Rette die Welt!</description>
-    <author email="frank.polster@gmail.com" href="http://greencity.dnsv.de/">Frank Polster</author>
+    <description>Lasst uns gemeinsam die Stadt grüner gestalten!</description>
+    <author email="frank.polster@gmail.com" href="http://greencity.dnsv.de/">Frank Pfeift</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />

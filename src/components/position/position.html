@@ -17,11 +17,24 @@
       </button>
     </ion-buttons>
   </ion-navbar>
-  
+
 </ion-header>
 <ion-content>
   <div id="map_canvas3"></div>
-  <ion-fab center bottom padding>
-    <button ion-fab color="primary" *ngIf="status == 2" (click)="save()"><ion-icon name="ios-share"></ion-icon></button>
-  </ion-fab>
+  <ion-list>
+    <ion-item>
+      <ion-label>Kategorie</ion-label>
+      <ion-select [(ngModel)]="category">
+        <ion-option *ngFor="let cat of cats.categories" [value]="cat.id">{{cat.name}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="showText">
+      <ion-label stacked>Schreib etwas dazu...</ion-label>
+      <ion-textarea [(ngModel)]="text"></ion-textarea>
+    </ion-item>
+  </ion-list>
 </ion-content>
+
+<ion-fab center bottom padding>
+  <button ion-fab color="primary" *ngIf="status == 2" (click)="save()"><ion-icon name="ios-share"></ion-icon></button>
+</ion-fab>

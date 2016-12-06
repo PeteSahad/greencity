@@ -1,3 +1,4 @@
+import { CategoryProvider } from './../../providers/category-provider';
 import { AuthProvider } from './../../providers/auth-provider';
 import { LocationTracker } from './../../providers/location-tracker';
 import { Geolocation, Toast } from 'ionic-native';
@@ -46,7 +47,7 @@ export class TrackingComponent {
 
 
   constructor(protected params: NavParams,
-    protected auth: AuthProvider,
+    protected auth: AuthProvider, protected cats:CategoryProvider,
     protected platform: Platform, protected zone: NgZone, protected locationTracker: LocationTracker, protected viewCtrl: ViewController, protected alert: AlertController) {
     console.log('Hello Tracking Component');
 
@@ -153,9 +154,8 @@ export class TrackingComponent {
 
   publishTracking() {
     this.locationTracker.stopTracking();
-    console.log({ path: this.positions, text: '', category: this.category.id, type: 'tracking', result: this.getResult() })
     if (this.category == undefined) {
-      this.viewCtrl.dismiss({ path: this.positions, text: '', type: 'tracking' });
+      this.viewCtrl.dismiss({ path: this.positions, text: '', type: 'tracking', result: this.getResult()  });
     } else {
       this.viewCtrl.dismiss({ path: this.positions, text: '', category: this.category.id, type: 'tracking', result: this.getResult() });
     }

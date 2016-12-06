@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Observable';
 import { ReminderService } from './reminder-service';
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
@@ -22,6 +23,7 @@ export class User {
   picture: string;
   options: any;
   district: District;
+  created_at: Date;
   eco_balance: number;
 }
 
@@ -33,7 +35,7 @@ export class AuthProvider {
   registrationId: string;
   dailyTipp: boolean = true;
 
-  constructor(public http: Http, protected reminder:ReminderService ) {
+  constructor(public http: Http, protected reminder: ReminderService) {
     this.user = JSON.parse(localStorage.getItem('user'));
     this.dailyTipp = JSON.parse(localStorage.getItem('dailyTipp'));
   }
@@ -47,11 +49,19 @@ export class AuthProvider {
     localStorage.setItem('dailyTipp', JSON.stringify(this.dailyTipp));
   }
 
-  register(position:Position) {
+  updateAmount() {
+    this.http.get(this.api + '/getAmount?id=' + this.user.id).map(res => res.json()).subscribe((data) => {
+      console.log(data);
+      this.user.eco_balance = data;
+
+    })
+  }
+
+  register(position: Position) {
 
     return new Promise(resolve => {
       this.http.post(this.api + '/register', {
-        latitude: position.coords.latitude, 
+        latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         registration_id: this.registrationId
       }).map(res => res.json()).subscribe(data => {
@@ -61,6 +71,13 @@ export class AuthProvider {
         resolve(this.user);
       })
     });
+  }
+
+  data() {
+    return new Observable((obs) => {
+
+    });
+
   }
 
 }

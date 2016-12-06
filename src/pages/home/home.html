@@ -46,7 +46,7 @@
     <ion-item text-wrap class="post-body">
       <div (click)="viewPost(post.postId)">
 
-        <p padding-top padding-bottom *ngIf="post.text">{{ post.text }}</p>
+        <p padding-top padding-bottom *ngIf="post.text" [innerHTML]="post.text"></p>
       </div>
 
       <div>
@@ -78,9 +78,17 @@
   <ion-fab right bottom padding>
     <button ion-fab color="danger"><ion-icon name="add"></ion-icon></button>
     <ion-fab-list side="top">
-      <button ion-fab *ngFor="let cat of cats.categories" (click)="doAction(cat)" color="{{cat.color}}">
-        <ion-icon name="{{cat.icon}}"></ion-icon> 
-        <div style="color: #000">{{ cat.menu }}</div>
+      <button ion-fab (click)="addTracking()" color="secondary">
+        <ion-icon name="bicycle"></ion-icon> 
+        <div style="color: #000">Fahrradstrecke aufzeichnen</div>
+      </button>
+      <button ion-fab (click)="addIssue()" color="primary">
+        <ion-icon name="camera"></ion-icon> 
+        <div style="color: #000">Foto machen</div>
+      </button>
+      <button ion-fab (click)="addPosition()" color="light">
+        <ion-icon name="location"></ion-icon> 
+        <div style="color: #000">Standort melden</div>
       </button>
     </ion-fab-list>
   </ion-fab>

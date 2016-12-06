@@ -53,6 +53,8 @@ export class PostPage {
         post.likeCount++;
       })
     }
+
+    this.auth.updateAmount();
   }
 
   staticMap(post) {
@@ -115,6 +117,8 @@ export class PostPage {
       this.comments.push(comment);
       this.newMessage = '';
       this.newImage = false;
+    }).then(() => {
+      this.auth.updateAmount();
     });
     console.log("Kommentar hinzufügen");
   }
@@ -135,6 +139,7 @@ export class PostPage {
         comment.likeCount++;
       })
     }
+    this.auth.updateAmount();
 
   }
 

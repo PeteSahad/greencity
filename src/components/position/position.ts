@@ -1,6 +1,7 @@
+import { CategoryProvider } from './../../providers/category-provider';
 import { Geolocation } from 'ionic-native';
 import { AuthProvider } from './../../providers/auth-provider';
-import { ViewController, NavParams } from 'ionic-angular';
+import { ViewController, NavParams, AlertController } from 'ionic-angular';
 import { Component } from '@angular/core';
 
 /*
@@ -25,13 +26,22 @@ export class PositionComponent {
   marker: any;
   location: any;
   title: any;
+  text: string = '';
+  showText: boolean = false;
+  showCategories: boolean = false;
 
   constructor(
     protected viewCtrl: ViewController,
     protected auth: AuthProvider,
+    public cats: CategoryProvider,
+    protected alert: AlertController,
     params: NavParams
   ) {
     this.category = params.get('category');
+    if(this.category == undefined) {
+      this.showCategories = true;
+      this.showText = true;
+    }
     this.title = params.get('title');
 
 
@@ -58,6 +68,8 @@ export class PositionComponent {
       });
 
       this.map.addListener('center_changed', (() => {
+        let center = this.map.getCenter()
+        this.center = new google.maps.LatLng(center.lat(), center.lng());
         this.marker.setPosition(this.map.getCenter());
       }));
 
@@ -67,7 +79,19 @@ export class PositionComponent {
 
 
   save() {
-    this.viewCtrl.dismiss({ latitude: this.center.lat(), longitude: this.center.lng(), type: 'position', user: this.auth.user.id, category: this.category.id })
+    if(this.category == undefined && this.showCategories) {
+      let alert = this.alert.create({
+        title: 'Kategorie',
+        subTitle: 'Bitte wähle noch eine Kategorie.'
+      })
+      return alert.present()
+    } 
+
+     if(this.category.id != undefined) {
+        this.category = this.category.id
+      }
+
+    this.viewCtrl.dismiss({ text: this.text, latitude: this.center.lat(), longitude: this.center.lng(), type: 'position', user: this.auth.user.id, category: this.category })
   }
 
   dismiss() {

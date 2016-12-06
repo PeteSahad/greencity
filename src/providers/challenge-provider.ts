@@ -18,7 +18,7 @@ export class ChallengeProvider {
   regularchallenges: any[];
   oncechallenges: any[];
 
-  constructor(protected apiService: ApiProvider) {
+  constructor(protected apiService: ApiProvider, protected auth:AuthProvider) {
   }
 
   load() {
@@ -43,11 +43,12 @@ export class ChallengeProvider {
   createStepResult(challenge, step, modalData) {
     return new Promise((resolve, reject) => {
       let response;
-      console.log(challenge, step, modalData);
       if (step.type == 'camera') {
         this.apiService.upload('/challenge', modalData.picture, {
           challenge: challenge.id,
           step: step.id,
+          type: step.type,
+          result: modalData
         }).then((data) => {
           resolve(data);
         }).catch((error) => {
@@ -56,7 +57,9 @@ export class ChallengeProvider {
       } else {
         this.apiService.post('/challenge', {
           challenge: challenge.id,
-          step: step.id
+          result: modalData,
+          step: step.id,
+          type: step.type
         }).then((data) => {
           resolve(data);
         }).catch((error) => {

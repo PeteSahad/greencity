@@ -1,3 +1,4 @@
+import { DailytippProvider } from './../../.tmp/providers/dailytipp-provider';
 import { ChallengeDetailPage } from './../pages/challenge-detail/challenge-detail';
 import { RankingPage } from './../pages/ranking/ranking';
 import { RegisterPage } from './../../.tmp/pages/register/register';
@@ -11,9 +12,9 @@ import { ChallengesPage } from './../pages/challenges/challenges';
 
 import { AuthProvider } from './../providers/auth-provider';
 import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Platform, NavController } from 'ionic-angular';
 import { ViewChild } from '@angular/core';
-import { StatusBar, Splashscreen, Push } from 'ionic-native';
+import { StatusBar, Splashscreen, Push, LocalNotifications } from 'ionic-native';
 
 // import page
 import { HomePage } from '../pages/home/home';
@@ -71,16 +72,10 @@ export class MyApp {
       icon: 'ios-settings-outline',
       count: 0,
       component: SettingPage
-    },
-    {
-      title: 'Logout',
-      icon: 'ios-log-out-outline',
-      count: 0,
-      component: LoginPage
     }
   ];
 
-  constructor(public platform: Platform, public auth: AuthProvider, protected userService: UserService) {
+  constructor(public platform: Platform, public auth: AuthProvider, protected userService: UserService, protected tipp: DailytippProvider) {
     if (auth.user == undefined) {
       this.rootPage = RegisterPage;
     } else {
@@ -122,19 +117,73 @@ export class MyApp {
             return;
           }
 
-          if(data.postId != undefined) {
+          if (data.postId != undefined) {
             this.nav.push(PostPage, { id: parseInt(data.postId) });
-          } else if(data.challengeId != undefined) {
+          } else if (data.challengeId != undefined) {
             this.nav.push(ChallengeDetailPage, { id: parseInt(data.challengeId) });
           }
 
-          
+
         })
 
         push.on('error', (e) => {
           console.log(e.message);
         });
       }
+
+      if (this.auth.user != undefined && this.auth.user.created_at != undefined) {
+
+        let date = new Date(this.auth.user.created_at);
+
+        LocalNotifications.schedule({
+          id: 1,
+          title: 'Umfrage',
+          text: 'Bitte nimm an der Umfrage teil.',
+          at: new Date(date.getTime() + (604800 * 1000 * 1))
+        })
+
+
+
+        LocalNotifications.schedule({
+          id: 2,
+          title: 'Umfrage',
+          text: 'Bitte nimm an der Umfrage teil.',
+          at: new Date(date.getTime() + (604800 * 1000 * 2))
+        })
+
+
+        LocalNotifications.schedule({
+          id: 3,
+          title: 'Umfrage',
+          text: 'Bitte nimm an der Umfrage teil.',
+          at: new Date(date.getTime() + (604800 * 1000 * 3))
+        })
+
+
+        LocalNotifications.schedule({
+          id: 4,
+          title: 'Umfrage',
+          text: 'Bitte nimm an der Umfrage teil.',
+          at: new Date(date.getTime() + (604800 * 1000 * 4))
+        })
+
+
+
+        LocalNotifications.schedule({
+          id: 5,
+          title: 'Umfrage',
+          text: 'Bitte nimm an der Umfrage teil.',
+          at: new Date(date.getTime() + (604800 * 1000 * 5))
+        })
+
+
+        LocalNotifications.on("click", (notification, state) => {
+
+          this.tipp.showShowSurvey();
+        });
+
+      }
+
 
 
       // hide splash screen

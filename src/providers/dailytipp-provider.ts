@@ -16,9 +16,10 @@ export class DailytippProvider {
 
   registered: boolean = false;
   lastTipp: Date = null;
+  showSurvey: Date = null;
+  alreadyShowed: boolean;
 
   constructor(protected auth: AuthProvider, protected api: ApiProvider, protected alert: AlertController) {
-
   }
 
   load() {
@@ -27,7 +28,7 @@ export class DailytippProvider {
     //Nutzer registriert?
     if (this.auth.user != undefined) {
       this.showDailyTipp();
-    }
+    } 
   }
 
   showDailyTipp() {
@@ -49,7 +50,7 @@ export class DailytippProvider {
       if (tipp == false) {
         return;
       }
-      
+
       //show Alert
       let alert = this.alert.create({
         title: tipp.title,
@@ -59,6 +60,42 @@ export class DailytippProvider {
 
       alert.present();
     }).catch(error => console.log(error))
+  }
+
+  showShowSurvey() {
+
+    if(this.alreadyShowed != undefined || this.auth.user == undefined || this.auth.user.created_at == undefined) {
+      return;
+    }
+    let date = new Date();
+    let createDate = new Date(this.auth.user.created_at);
+    let day = createDate.getDate()
+    createDate.setDate(day + 14);
+    if(day > createDate.getDate()) {
+      createDate.setMonth(createDate.getMonth() + 1);
+    }
+
+    console.log(date, createDate, this.auth.user.created_at);
+
+    if (createDate.getTime() <= date.getTime()) {
+      let alert = this.alert.create({
+        title: "Umfrage",
+        subTitle: 'Danke, dass du die App 2 Wochen getestet hast! <a href="https://www.soscisurvey.de/greencity/?q=GreenCity_T1">Hier geht es zum Fragebogen</a>',
+        buttons: [{
+          text: 'OK',
+          handler: () => {
+            window.open("https://www.soscisurvey.de/greencity/?q=GreenCity_T1", '_system');
+          }
+        }]
+      })
+
+      alert.present();
+      this.alreadyShowed = true;
+
+      
+    }
+
+
   }
 
 }

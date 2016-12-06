@@ -15,7 +15,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ApiProvider {
 
-  private apiUrl: string = 'http://greencity.dnsv.eu/app_dev.php'
+  private apiUrl: string = 'http://greencity.dnsv.eu'
 
   private location: any;
 
@@ -70,6 +70,7 @@ export class ApiProvider {
         return fileTransfer.upload(file, this.apiUrl + url, params)
       }).then((response: any) => {
         let data = JSON.parse(response.response);
+        this.auth.updateAmount();
         resolve(data);
       }).catch((error) => {
         reject(error);
@@ -81,27 +82,23 @@ export class ApiProvider {
   post(url, body, options?) {
     return new Promise((resolve, reject) => {
       this.getLocation().then((position: any) => {
-        Object.assign(body, {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
+        if (body.latitude == undefined || body.longitude == undefined) {
+          Object.assign(body, {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        }
       }).then(() => {
         if (this.auth.user != undefined) {
           Object.assign(body, { user: this.auth.user.id });
         }
       }).then(() => {
-        this.http.post(this.apiUrl + url, body, options).map(res => res.json())
-          .subscribe(value => {
-            resolve(value)
-          }, error => {
-            let alertWindow = this.alert.create({
-              title: 'Fehler',
-              subTitle: 'Es besteht keine Verbindung zum Server. Bitte prüfe dein Internetzugang.',
-              buttons: ['OK']
-            });
-            alertWindow.present();
-            reject(error);
-          });
+        return this.http.post(this.apiUrl + url, body, options).map(res => res.json()).subscribe(value => {
+          this.auth.updateAmount();
+          resolve(value)
+        }, error => {
+          reject(error);
+        });
       })
 
 
@@ -135,7 +132,8 @@ export class ApiProvider {
               buttons: ['OK']
             });
             alertWindow.present();
-
+            this.auth.updateAmount();
+            this.auth.updateAmount();
             reject(error);
           });
       })

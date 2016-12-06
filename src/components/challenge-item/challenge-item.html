@@ -1,0 +1,20 @@
+<!--
+  Generated template for the ChallengeItem component.
+
+  See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
+  for more info on Angular 2 Components.
+-->
+
+<div class="item-body">
+  <h3 color="primary" class="challenge-author" (click)="viewUser(challenge.user_id)">
+    {{ challenge.title }}
+  </h3>
+
+
+
+  <div class="challenge-content">
+    <img class="full-image" *ngIf="challenge.image" src="{{ challenge.image }}">
+    <p>{{ challenge.description}}</p>
+    <ion-badge color="primary">{{challenge.ecos}} ECOs</ion-badge>
+  </div>
+</div>

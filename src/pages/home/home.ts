@@ -40,7 +40,8 @@ export class HomePage {
     public modalCtrl: ModalController,
     public cats: CategoryProvider,
     protected alert: AlertController,
-    protected tipp: DailytippProvider
+    protected tipp: DailytippProvider,
+    protected auth:AuthProvider
 
   ) {
    
@@ -66,6 +67,9 @@ export class HomePage {
         post.likeCount--;
       })
     }
+
+    this.auth.updateAmount();
+
   }
 
   // on click, go to post detail
@@ -78,52 +82,42 @@ export class HomePage {
     this.nav.push(UserPage, { id: userId })
   }
 
-  doAction(cat) {
-    if (cat.action == 'tracking') {
-      return this.addTracking(cat);
-    }
-
-    else if (cat.action == 'position') {
-      return this.addPosition(cat);
-    }
-
-    else {
-      return this.addIssue(cat);
-    }
-  }
-
-  addPosition(cat) {
-    let modal = this.modalCtrl.create(PositionComponent, { showCategories: false, showText: true, title: cat.menu, category: cat });
-    modal.onDidDismiss((data) => {
-      if (data == false || data == undefined) {
-        return;
-      }
-      return this.postService.createFromPosition(data);
-    })
-    modal.present();
-  }
 
 
-
-  addIssue(cat) {
-    let modal = this.modalCtrl.create(CameraComponent, { showCategories: false, showText: true, title: cat.menu, category: cat });
-    modal.onDidDismiss((data) => {
-      if (data == false || data == undefined) {
-        return;
-      }
-      return this.postService.createFromCamera(data);
-    })
-    modal.present();
-  }
-
-  addTracking(cat) {
-    let modal = this.modalCtrl.create(TrackingComponent, { title: cat.menu, category: cat });
+  addPosition() {
+    let modal = this.modalCtrl.create(PositionComponent, { showCategories: true, showText: true, title: 'Position melden' });
     modal.onDidDismiss((data) => {
       console.log(data);
       if (data == false || data == undefined) {
         return;
       }
-      return this.postService.createFromTracking(data);
+      return this.postService.createFromPosition(data).then(() => {this.auth.updateAmount();});
+    })
+    modal.present();
+  }
+
+
+
+  addIssue() {
+    let modal = this.modalCtrl.create(CameraComponent, { showCategories: true, showText: true, title: 'Foto machen' });
+    modal.onDidDismiss((data) => {
+      console.log(data);
+      if (data == false || data == undefined) {
+        return;
+      }
+      return this.postService.createFromCamera(data).then(() => {this.auth.updateAmount();});
+    })
+    modal.present();
+  }
+
+  addTracking() {
+    let modal = this.modalCtrl.create(TrackingComponent, { showCategories: true, showText: true, category: this.cats.getMobility(), title: 'Fahrradstrecke aufzeichnen' });
+    modal.onDidDismiss((data) => {
+      console.log(data);
+      if (data == false || data == undefined) {
+        return;
+      }
+      return this.postService.createFromTracking(data).then(() => {this.auth.updateAmount();});
     })
     modal.present();
   }

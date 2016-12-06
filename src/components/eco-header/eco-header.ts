@@ -20,7 +20,8 @@ export class EcoHeaderComponent {
   constructor(public auth: AuthProvider, protected nav: NavController) {
     console.log('Hello EcoHeader Component');
     console.log(auth.user);
-
+    this.auth.updateAmount();
+    this.auth.save();
   }
 
   getEcos() {

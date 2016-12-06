@@ -5,7 +5,7 @@ import { Toast } from 'ionic-native';
 import { CameraComponent } from './../../components/camera/camera';
 import { ChallengeProvider } from './../../providers/challenge-provider';
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
+import { NavController, LoadingController, NavParams, ModalController, AlertController } from 'ionic-angular';
 
 export class IStep {
   title: string;
@@ -28,6 +28,8 @@ export class Challenge {
   title: string;
   description: string;
   ecos: number;
+  image: string;
+  user_id: string;
 }
 
 export class Step {
@@ -57,6 +59,7 @@ export class ChallengeDetailPage {
     protected modalCtrl: ModalController,
     protected challengeProvider: ChallengeProvider,
     protected alert: AlertController,
+    protected loadingCtrl: LoadingController
   ) {
     let challengeId = params.get('id');
     this.challengeProvider.getItem(challengeId).then((response: any) => {
@@ -64,7 +67,6 @@ export class ChallengeDetailPage {
       this.progress = response.progress;
       this.steps = response.steps;
     }).catch((error) => {
-      console.log(error);
     })
   }
 
@@ -72,38 +74,62 @@ export class ChallengeDetailPage {
 
   }
 
-  doAction(action) {
-   
-    
+  doAction(step) {
+    //Step erledigt? --> return meldung du hast die quest bereits erledigt
+    if (this.alreadyDone(step)) {
+      let alert = this.alert.create({
+        title: 'Schon erledigt!',
+        subTitle: 'Du hast diesen Schritt schon erledigt! Probiere die anderen.',
+        buttons: ['OK']
+      });
+
+      alert.present();
+      return false;
+    }
+
+
     let modal;
-    if (action.type == 'position') {
+    if (step.type == 'position') {
       modal = this.modalCtrl.create(PositionComponent, { showCategories: false });
-    } else if (action.type == 'tracking') {
+    } else if (step.type == 'tracking') {
       modal = this.modalCtrl.create(TrackingComponent, { showCategories: false });
     } else {
-      modal = this.modalCtrl.create(CameraComponent, { showCategories: false, title: action.description });
+      modal = this.modalCtrl.create(CameraComponent, { showCategories: false, title: step.description });
     }
 
     modal.onDidDismiss((data) => {
-      console.log(data);
-      if(data == false) {
+      if (data == false) {
+        //Schritt wurde abgebrochen
         return;
       }
-      this.challengeProvider.createStepResult(this.challenge, action, data).then((value: Step) => {
 
+      //Schritt validieren
+
+      let loading = this.loadingCtrl.create({ content: 'Ergebnis wird validiert...' });
+      loading.present();
+      this.challengeProvider.createStepResult(this.challenge, step, data).then((value: any) => {
+        loading.dismiss();
         if (value.id) {
           this.progress.user.steps.push({ id: value.id });
         }
+        this.progress.user.value++;
 
         if (this.progress.user.steps.length == this.steps.length) {
           let alert = this.alert.create({
             title: 'Herzlichen Glückwunsch!',
-            subTitle: 'Du hast alle Aufgaben erfolgreich erledigt und dir ' + this.challenge.ecos + ' ECOs verdient! ',
+            subTitle: 'Du hast alle Aufgaben erfolgreich erledigt und dir ' + this.challenge.ecos + ' ECOs verdient! Weiter so! ',
             buttons: ['OK']
           });
 
           alert.present();
         }
+      }).catch((error) => {
+        loading.dismiss();
+        let alert = this.alert.create({
+          title: 'Hm',
+          subTitle: 'Das Ergebnis konnte nicht validiert werden. Probiere es doch später einfach noch einmal! Go for Green!'
+        })
+        alert.present();
       })
     })
 
@@ -114,8 +140,11 @@ export class ChallengeDetailPage {
     if (this.progress == undefined) {
       return false;
     }
-    let data = this.progress.user.steps.filter(stepResult => stepResult.id == step.id)[0];
-    return data;
+    let data = this.progress.user.steps.filter(stepResult => stepResult.id == step.id);
+    if (data.length == 0) {
+      return false;
+    }
+    return true;
 
   }
 
@@ -145,15 +174,15 @@ export class ChallengeDetailPage {
   }
 
   getRuntime(challenge) {
-    if(challenge.runtime == undefined || challenge.runtime == null) {
+    if (challenge.runtime == undefined || challenge.runtime == null) {
       return 'unbegrenzt';
     }
 
-    if(challenge.runtime == 'day') {
+    if (challenge.runtime == 'day') {
       return 'Ein Tag'
-    } else if(challenge.runtime == 'week') {
+    } else if (challenge.runtime == 'week') {
       return 'Eine Woche'
-    } else if(challenge.runtime == 'month') {
+    } else if (challenge.runtime == 'month') {
       return 'Ein Monat'
     } else {
       return 'Ein Jahr';

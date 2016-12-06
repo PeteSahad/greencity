@@ -1,3 +1,4 @@
+import { AuthProvider } from './../../providers/auth-provider';
 import { ApiProvider } from './../../../.tmp/providers/api-provider';
 import { CouponProvider } from './../../providers/coupon-provider';
 import { Component } from '@angular/core';
@@ -21,7 +22,7 @@ export class CouponDetailPage {
   latlng: any;
   marker: any;
 
-  constructor(public navCtrl: NavController, protected params: NavParams, public coups: CouponProvider, protected api: ApiProvider, protected alert: AlertController) {
+  constructor(protected auth:AuthProvider, public navCtrl: NavController, protected params: NavParams, public coups: CouponProvider, protected api: ApiProvider, protected alert: AlertController) {
 
 
   }
@@ -69,7 +70,7 @@ export class CouponDetailPage {
           if (data.pw == 'nuf1337') {
             this.api.post('/usecoupon', { couponId: this.coupon.id }).then((response) => {
               if (response == false) {
-
+                
                 let alert2 = this.alert.create({
                   title: 'Oops!',
                   subTitle: 'Es ist ein Fehler aufgetreten. Ist dein Konto evt. nicht gedeckt?'
@@ -77,21 +78,24 @@ export class CouponDetailPage {
 
                 return alert2.present();
               }
+              this.auth.updateAmount();
               this.coupon.transactions.push(response);
               alert1.present();
             })
           } else {
             let alert2 = this.alert.create({
               title: 'Falsches Passwort!',
-              subTitle: 'Du hast ein falsches Passwort eingegeben.'
+              subTitle: 'Du hast ein falsches Passwort eingegeben.',
+              buttons: ['OK']
             })
+            alert2.present();
             return false;
           }
         }
       }]
     })
 
-
+    alert1.present();
   }
 
   maxQuantityColor(coupon) {
