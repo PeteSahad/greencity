@@ -1,7 +1,7 @@
 import { WelcomeSliderComponent } from './../../components/welcome-slider/welcome-slider';
 import { AuthProvider } from './../../providers/auth-provider';
 import { Component } from '@angular/core';
-import { NavController, MenuController, ModalController } from 'ionic-angular';
+import { NavController, MenuController, ModalController, AlertController, LoadingController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { Geolocation } from 'ionic-native';
 
@@ -19,15 +19,20 @@ import { Geolocation } from 'ionic-native';
 export class RegisterPage {
   public chat: any;
 
-  constructor(public nav: NavController, public menu: MenuController, public auth: AuthProvider, protected modal: ModalController) {
+  constructor(public nav: NavController, public menu: MenuController, public auth: AuthProvider, protected modal: ModalController, protected alert: AlertController, protected loading:LoadingController) {
     // disable menu
     this.menu.swipeEnable(false);
   }
 
   register() {
-    Geolocation.getCurrentPosition().then((position) => {
+    let loading = this.loading.create();
+    loading.present();
+    Geolocation.getCurrentPosition({
+      maximumAge: 0, timeout: 5000, enableHighAccuracy: false
+    }).then((position) => {
+      
       this.auth.register(position).then((user: any) => {
-
+        loading.dismiss();
         this.auth.dailyTipp = true;
 
         return new Promise((resolve, reject) => {
@@ -39,7 +44,13 @@ export class RegisterPage {
         })
       });
     }).catch((error) => {
-      console.log('Standort konnte nicht bestimmt werden.')
+      loading.dismiss();
+      let alert = this.alert.create({
+        title: 'Standort deaktiviert',
+        subTitle: 'Bitte aktiviere deine Standortbestimmung'
+      })
+      alert.present();
+      console.log(error);
     })
 
   }

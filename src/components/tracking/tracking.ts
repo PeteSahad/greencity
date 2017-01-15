@@ -138,7 +138,7 @@ export class TrackingComponent {
         this.co2 += this.locationTracker.co2;
         this.umweltCosts += this.locationTracker.umweltCosts;
         this.folgeCosts += this.locationTracker.folgeCosts;
-        this.costs += this.locationTracker.costs;
+        this.costs += this.locationTracker.costs / 1000;
 
         //this.time += this.locationTracker.time;
         this.distance += this.locationTracker.distance;

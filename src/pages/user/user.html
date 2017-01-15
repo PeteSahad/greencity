@@ -16,7 +16,7 @@
 <ion-content>
   <div text-center class="user-profile primary-bg">
 
-    <img class="profile-picture" [src]="user.picture">
+    <img class="profile-picture" *ngIf="user.picture" [src]="user.picture">
 
     <h4 class="light">{{ user.username }}</h4>
 
@@ -51,7 +51,7 @@
       <div (click)="viewPost(post.id)">
         <img class="full-image" *ngIf="isTracking(post) || isPosition(post)" (click)="viewPost(post.postId)" src="https://maps.googleapis.com/maps/api/staticmap?{{ staticMap(post) }}">
         <img class="full-image" *ngIf="post.data && post.type == 'camera'" (click)="viewPost(post.postId)" src="http://greencity.dnsv.eu/uploads/{{ post.data }}">
-        <p>{{ post.text}}</p>
+        <p *ngIf="post.text" [innerHTML]="post.text"></p>
       </div>
       <p>
         <a (click)="toggleLike(post)" class="subdued">

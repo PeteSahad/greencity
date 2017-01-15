@@ -25,7 +25,7 @@
 
   <img class="full-image" *ngIf="isMapPost(post)" src="https://maps.googleapis.com/maps/api/staticmap?{{ staticMap(post) }}">
   <img class="full-image" *ngIf="isPicturePost(post)" src="http://greencity.dnsv.eu/uploads/{{ post.data }}">
-  <p *ngIf="post.text">{{ post.text}}</p>
+  <p *ngIf="post.text" [innerHTML]="post.text"></p>
 
   <p>
     <a (click)="toggleLike(post)" class="subdued">

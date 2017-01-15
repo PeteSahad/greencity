@@ -8,7 +8,7 @@ import { Geolocation } from 'ionic-native';
 import { CategoryProvider } from './../../providers/category-provider';
 import { CameraComponent } from './../../components/camera/camera';
 import { Component } from '@angular/core';
-import { NavController, ModalController, Platform, AlertController } from 'ionic-angular';
+import { NavController, ModalController, Platform, AlertController, LoadingController } from 'ionic-angular';
 import { PostService } from '../../services/post-service';
 import { PostPage } from '../post/post';
 import { UserPage } from '../user/user';
@@ -41,7 +41,8 @@ export class HomePage {
     public cats: CategoryProvider,
     protected alert: AlertController,
     protected tipp: DailytippProvider,
-    protected auth:AuthProvider
+    protected auth:AuthProvider,
+    protected loading: LoadingController
 
   ) {
    
@@ -84,40 +85,65 @@ export class HomePage {
 
 
 
-  addPosition() {
-    let modal = this.modalCtrl.create(PositionComponent, { showCategories: true, showText: true, title: 'Position melden' });
+  doAction(cat) {
+    if (cat.action == 'tracking') {
+      return this.addTracking(cat);
+    }
+
+    else if (cat.action == 'position') {
+      return this.addPosition(cat);
+    }
+
+    else {
+      return this.addIssue(cat);
+    }
+  }
+
+  addPosition(cat) {
+    let loading = this.loading.create();
+    let modal = this.modalCtrl.create(PositionComponent, { showCategories: false, showText: true, title: cat.menu, category: cat });
     modal.onDidDismiss((data) => {
-      console.log(data);
       if (data == false || data == undefined) {
         return;
       }
-      return this.postService.createFromPosition(data).then(() => {this.auth.updateAmount();});
+      loading.present();
+      return this.postService.createFromPosition(data).then(() => { loading.dismiss() }).catch(() => { 
+        loading.dismiss(); 
+        let alert = this.alert.create({title: 'Oops', subTitle: 'Beitrag konnte nicht erstellt werden. Probiere es doch nochmal!', buttons: ['OK']})
+      });
     })
     modal.present();
   }
 
 
 
-  addIssue() {
-    let modal = this.modalCtrl.create(CameraComponent, { showCategories: true, showText: true, title: 'Foto machen' });
+  addIssue(cat) {
+    let modal = this.modalCtrl.create(CameraComponent, { showCategories: false, showText: true, title: cat.menu, category: cat });
+    let loading = this.loading.create();
     modal.onDidDismiss((data) => {
-      console.log(data);
       if (data == false || data == undefined) {
         return;
       }
-      return this.postService.createFromCamera(data).then(() => {this.auth.updateAmount();});
+      return this.postService.createFromCamera(data).then(() => { loading.dismiss() }).catch(() => { 
+        loading.dismiss(); 
+        let alert = this.alert.create({title: 'Oops', subTitle: 'Beitrag konnte nicht erstellt werden. Probiere es doch nochmal!', buttons: ['OK']})
+      });;
     })
     modal.present();
   }
 
-  addTracking() {
-    let modal = this.modalCtrl.create(TrackingComponent, { showCategories: true, showText: true, category: this.cats.getMobility(), title: 'Fahrradstrecke aufzeichnen' });
+  addTracking(cat) {
+    let modal = this.modalCtrl.create(TrackingComponent, { title: cat.menu, category: cat });
+    let loading = this.loading.create();
     modal.onDidDismiss((data) => {
       console.log(data);
       if (data == false || data == undefined) {
         return;
       }
-      return this.postService.createFromTracking(data).then(() => {this.auth.updateAmount();});
+      return this.postService.createFromTracking(data).then(() => { loading.dismiss() }).catch(() => { 
+        loading.dismiss(); 
+        let alert = this.alert.create({title: 'Oops', subTitle: 'Beitrag konnte nicht erstellt werden. Probiere es doch nochmal!', buttons: ['OK']})
+      });;
     })
     modal.present();
   }

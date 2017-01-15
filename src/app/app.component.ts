@@ -134,12 +134,13 @@ export class MyApp {
       if (this.auth.user != undefined && this.auth.user.created_at != undefined) {
 
         let date = new Date(this.auth.user.created_at);
+        date = new Date();
 
         LocalNotifications.schedule({
           id: 1,
           title: 'Umfrage',
           text: 'Bitte nimm an der Umfrage teil.',
-          at: new Date(date.getTime() + (604800 * 1000 * 1))
+          at: new Date(date.getTime() + (3600000))
         })
 
 
@@ -148,7 +149,7 @@ export class MyApp {
           id: 2,
           title: 'Umfrage',
           text: 'Bitte nimm an der Umfrage teil.',
-          at: new Date(date.getTime() + (604800 * 1000 * 2))
+          at: new Date(date.getTime() + (2 * 604800 * 1000 * 2))
         })
 
 
@@ -156,7 +157,7 @@ export class MyApp {
           id: 3,
           title: 'Umfrage',
           text: 'Bitte nimm an der Umfrage teil.',
-          at: new Date(date.getTime() + (604800 * 1000 * 3))
+          at: new Date(date.getTime() + (2 * 604800 * 1000 * 3))
         })
 
 
@@ -164,7 +165,7 @@ export class MyApp {
           id: 4,
           title: 'Umfrage',
           text: 'Bitte nimm an der Umfrage teil.',
-          at: new Date(date.getTime() + (604800 * 1000 * 4))
+          at: new Date(date.getTime() + (2 * 604800 * 1000 * 4))
         })
 
 
@@ -173,7 +174,7 @@ export class MyApp {
           id: 5,
           title: 'Umfrage',
           text: 'Bitte nimm an der Umfrage teil.',
-          at: new Date(date.getTime() + (604800 * 1000 * 5))
+          at: new Date(date.getTime() + (2 * 604800 * 1000 * 5))
         })
 
 

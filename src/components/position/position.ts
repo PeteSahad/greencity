@@ -43,6 +43,7 @@ export class PositionComponent {
       this.showText = true;
     }
     this.title = params.get('title');
+    this.showText = params.get('showText');
 
 
   }

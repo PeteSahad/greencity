@@ -22,7 +22,7 @@
 <ion-content>
   <div id="map_canvas3"></div>
   <ion-list>
-    <ion-item>
+    <ion-item *ngIf="showCategories">
       <ion-label>Kategorie</ion-label>
       <ion-select [(ngModel)]="category">
         <ion-option *ngFor="let cat of cats.categories" [value]="cat.id">{{cat.name}}</ion-option>

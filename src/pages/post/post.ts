@@ -1,7 +1,7 @@
 import { AuthProvider } from './../../providers/auth-provider';
 import { Component } from '@angular/core';
 import { Camera } from 'ionic-native';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, AlertController } from 'ionic-angular';
 import { PostService } from '../../services/post-service';
 import { UserPage } from '../user/user';
 
@@ -24,7 +24,7 @@ export class PostPage {
   newMessage: string = '';
   newImage: string | boolean = false;
 
-  constructor(public nav: NavController, public navParams: NavParams, public postService: PostService, public auth: AuthProvider) {
+  constructor(protected alert: AlertController, public nav: NavController, public navParams: NavParams, public postService: PostService, public auth: AuthProvider, protected loading:LoadingController) {
     // get sample data only
     let id = navParams.get('id');
     postService.getItem(id).then((data: any) => {
@@ -111,14 +111,24 @@ export class PostPage {
     if (this.newMessage == '') {
       return;
     }
-
+    let loading = this.loading.create();
+    loading.present();
     this.postService.addComment(this.post.id, this.auth.user.id, this.newMessage, this.newImage).then((comment) => {
+      loading.dismiss();
       console.log(comment);
       this.comments.push(comment);
       this.newMessage = '';
       this.newImage = false;
+      
     }).then(() => {
       this.auth.updateAmount();
+    }).catch(() => {
+      loading.dismiss();
+      let alert = this.alert.create({
+        title: 'Ups',
+        subTitle: 'Kommentar konnte nicht hinzugefügt werden. :-/'
+      })
+      alert.present();
     });
     console.log("Kommentar hinzufügen");
   }
